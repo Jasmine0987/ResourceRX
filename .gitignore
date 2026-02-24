@@ -1,0 +1,21 @@
+# Logs
+logs
+*.log
+
+# Dependencies
+node_modules/
+server/node_modules/
+
+# Build output
+dist/
+dist-ssr/
+
+# Environment secrets (NEVER commit)
+.env
+.env.local
+.env.production
+
+# OS / Editor
+.DS_Store
+.vscode/
+.idea/

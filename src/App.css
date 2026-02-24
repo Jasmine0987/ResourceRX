@@ -1,0 +1,31 @@
+:root {
+  /* The Deep Navy from your screenshot */
+  --primary: #1D3557; 
+  
+  /* The Mid-Blue from your palette */
+  --secondary: #457B9D; 
+  
+  /* The Mint/Aqua highlight color */
+  --accent: #A8DADC; 
+  
+  /* The Off-White background from the top of your screenshot */
+  --bg-light: #F1FAEE; 
+  
+  /* The Dark Gray/Black from your palette */
+  --bg-dark: #2C2C2C; 
+}
+
+/* Update your glass panel to be light & frosted like the screenshot */
+.glass-panel {
+  background: rgba(255, 255, 255, 0.4);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.5);
+  box-shadow: 0 8px 32px 0 rgba(29, 53, 87, 0.05);
+}
+
+/* Ensure the body uses the light-to-mid gradient from your video */
+body {
+  background: linear-gradient(135deg, var(--bg-light) 0%, var(--accent) 50%, var(--secondary) 100%);
+  background-attachment: fixed;
+  color: var(--primary);
+}

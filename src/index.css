@@ -1,0 +1,24 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  /* Set the base black here so there is no white flash on load */
+  background-color: #050A10;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  /* Remove the light grey background! */
+  background-color: transparent; 
+  color: #E0E1DD;
+  min-height: 100vh;
+}
+
+/* Fix for full-height layout */
+#root {
+  min-height: 100vh;
+}
