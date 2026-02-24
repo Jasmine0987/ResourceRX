@@ -1,16 +1,38 @@
-# React + Vite
+# Prerequisites
+Requirement________Notes
+# 
+Node.js 18+________Required for Vite frontend and Express backend
+# 
+npm________________Comes with Node.js
+# 
+Ollama_____________Download from ollama.com~2 GB disk
+# 
+gemma:2b__________model is ~1.5 GB
+# 
+Git__________________For cloning and collaboration
+# First-Time Installation
+# 1. Install frontend dependencies (from project root)
+npm install
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+# 2. Install backend dependencies
+cd server && npm install && cd ..
 
-Currently, two official plugins are available:
+# 3. Install Ollama (macOS / Linux)
+curl -fsSL https://ollama.com/install.sh | sh
+# Windows: download installer from https://ollama.com
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+# 4. Pull the AI model (one-time, ~1.5 GB download)
+ollama pull gemma:2b
+Running (3 Terminals)
+bash# Terminal 1 — AI engine
+ollama serve
 
-## React Compiler
+# Terminal 2 — Express AI proxy backend
+cd resourcerx/server && node index.js
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+# Terminal 3 — React frontend
+cd resourcerx && npm run dev
 
-## Expanding the ESLint configuration
-
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+App: http://localhost:5173
+AI backend: http://localhost:5000
+Verify AI working: curl http://localhost:5000/test-ai
