@@ -1,3 +1,4 @@
+## A peer-to-peer medical equipment sharing platform with 4 portals, 35 routes, and 8 AI features — all running locally on Ollama with zero cloud dependency.
 # Prerequisites
 Requirement________Notes
 # 
