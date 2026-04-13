@@ -5,19 +5,21 @@ import {
   Navigation, Truck, Zap, Wifi, Layers, Maximize2,
   MapPin, Compass, ChevronLeft, ChevronRight, Radio, X, RefreshCw
 } from 'lucide-react';
+import { useLivePositions, useWeather } from '../../hooks/useRealData';
 
 const UNITS = [
-  { id:"RX-882", status:"In Transit", loc:"Newark, NJ",     speed:54,  asset:"Siemens MRI",      lat:40.7357, lng:-74.1724, color:"#1d3557" },
-  { id:"RX-441", status:"Loading",    loc:"Hartford, CT",   speed:0,   asset:"Dialysis V4",      lat:41.7658, lng:-72.6851, color:"#f59e0b" },
-  { id:"RX-112", status:"Standby",    loc:"Long Island, NY",speed:0,   asset:"X-Ray Mobile",     lat:40.7891, lng:-73.1350, color:"#64748b" },
-  { id:"RX-909", status:"Delayed",    loc:"NJ Turnpike",    speed:12,  asset:"GE Revolution CT", lat:40.4774, lng:-74.2591, color:"#ef4444" },
+  { id:"RX-882", status:"In Transit", loc:"Mumbai, MH",    speed:54, asset:"Siemens MRI 3T",     lat:19.0760, lng:72.8777, color:"#1d3557" },
+  { id:"RX-441", status:"Loading",    loc:"Bengaluru, KA", speed:0,  asset:"Fresenius Dialysis", lat:12.9716, lng:77.5946, color:"#f59e0b" },
+  { id:"RX-112", status:"Standby",    loc:"Chennai, TN",   speed:0,  asset:"Philips Ventilator", lat:13.0827, lng:80.2707, color:"#64748b" },
+  { id:"RX-909", status:"Delayed",    loc:"Pune, MH",      speed:12, asset:"GE Revolution CT",   lat:18.5204, lng:73.8567, color:"#ef4444" },
 ];
 
 const HOSPITALS = [
-  { name:"Summit Health NJ",    lat:40.9176, lng:-74.1719 },
-  { name:"Northwell Health NY", lat:40.7549, lng:-73.7890 },
-  { name:"Boston Med Center",   lat:42.3351, lng:-71.0727 },
-  { name:"Penn Medicine",       lat:39.9496, lng:-75.1964 },
+  { name:"AIIMS Delhi",                lat:28.5665, lng:77.2100 },
+  { name:"Apollo Hospitals Hyderabad", lat:17.4326, lng:78.4071 },
+  { name:"Fortis Mumbai",              lat:19.1075, lng:72.8263 },
+  { name:"Manipal Hospital Bengaluru", lat:12.9442, lng:77.6009 },
+  { name:"KIMS Hyderabad",             lat:17.4485, lng:78.3908 },
 ];
 
 // Three genuinely different, authenticated tile providers
@@ -70,9 +72,12 @@ export default function LogisticsMap() {
   const [selected,  setSelected]  = useState(null);
   const [latency,   setLatency]   = useState(22);
   const [mapReady,  setMapReady]  = useState(false);
-  const [positions, setPositions] = useState(
-    UNITS.reduce((acc,u)=>({...acc,[u.id]:{lat:u.lat,lng:u.lng}}),{})
-  );
+  // Real-time positions from server (synced across all browsers)
+  const { positions: livePositions } = useLivePositions();
+  const positions = Object.keys(livePositions).length > 0 ? livePositions : 
+    UNITS.reduce((acc,u)=>({...acc,[u.id]:{lat:u.lat,lng:u.lng}}),{});
+  // Weather at map center
+  const { weather } = useWeather(40.7128, -74.006);
 
   // Jitter latency
   useEffect(() => {
@@ -80,24 +85,7 @@ export default function LogisticsMap() {
     return () => clearInterval(t);
   }, []);
 
-  // Animate moving units
-  useEffect(() => {
-    const t = setInterval(() => {
-      setPositions(prev => {
-        const next = { ...prev };
-        UNITS.forEach(u => {
-          if (u.speed > 0) {
-            next[u.id] = {
-              lat: prev[u.id].lat + (Math.random() - 0.49) * 0.006,
-              lng: prev[u.id].lng + (Math.random() - 0.45) * 0.008,
-            };
-          }
-        });
-        return next;
-      });
-    }, 3000);
-    return () => clearInterval(t);
-  }, []);
+  // Positions now come from server via useLivePositions() hook above
 
   // Update marker positions on map
   useEffect(() => {
@@ -137,7 +125,7 @@ export default function LogisticsMap() {
     if (!mapRef.current || mapInst.current) return;
     initDoneRef.current = true;
     const L = window.L;
-    const map = L.map(mapRef.current, { center:[40.7128,-74.0060], zoom:7, zoomControl:true });
+    const map = L.map(mapRef.current, { center:[20.5937, 78.9629], zoom:5, zoomControl:true }); // India center
     mapInst.current = map;
 
     // Initial tile - Terrain
@@ -214,6 +202,15 @@ export default function LogisticsMap() {
           <p className="text-[9px] font-bold opacity-30 text-primary">{TILE_CONFIGS[mapMode].description}</p>
         </div>
       </div>
+
+      {/* Live weather banner */}
+      {weather && (
+        <div className={`flex items-center gap-3 px-5 py-3 rounded-2xl text-sm font-black w-fit ${weather.affectsETA ? 'bg-amber-50 border border-amber-200 text-amber-800' : 'glass-panel text-primary'}`}>
+          <span className="text-lg">{weather.emoji}</span>
+          <span className="text-[10px] uppercase font-black">{weather.condition} · {weather.temp}°C · Wind {weather.wind} km/h</span>
+          {weather.affectsETA && <span className="text-[9px] uppercase bg-amber-200 px-2 py-0.5 rounded-full">Delays possible</span>}
+        </div>
+      )}
 
       {/* MAP */}
       <div className="glass-panel rounded-[3.5rem] overflow-hidden relative" style={{height:520}}>

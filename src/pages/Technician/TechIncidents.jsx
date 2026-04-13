@@ -141,7 +141,7 @@ export default function TechIncidents() {
       <div className="flex gap-4 justify-center">
         <button onClick={()=>{setSubmitted(false);setFailType('');setSeverity('');setDetails('');setPhotos([]);setAiResult(null);}}
           className="bg-primary text-white px-10 py-4 rounded-2xl font-black text-[10px] uppercase tracking-widest">File Another</button>
-        <button onClick={()=>navigate('/tech')} className="glass-panel px-10 py-4 rounded-2xl font-black text-[10px] uppercase tracking-widest text-primary">Ops Center</button>
+        <button onClick={()=>navigate('/tech/dashboard')} className="glass-panel px-10 py-4 rounded-2xl font-black text-[10px] uppercase tracking-widest text-primary">Ops Center</button>
       </div>
     </div>
   );
@@ -152,7 +152,7 @@ export default function TechIncidents() {
       {/* HEADER */}
       <div className="flex flex-col md:flex-row md:items-end justify-between gap-6">
         <div>
-          <button onClick={()=>navigate('/tech')} className="flex items-center gap-2 text-[10px] font-black uppercase opacity-40 hover:opacity-100 mb-4 text-primary transition-opacity">
+          <button onClick={()=>navigate('/tech/dashboard')} className="flex items-center gap-2 text-[10px] font-black uppercase opacity-40 hover:opacity-100 mb-4 text-primary transition-opacity">
             <ChevronLeft size={14}/> Ops Center
           </button>
           <div className="inline-flex items-center gap-2 px-4 py-1 rounded-full bg-red-500/10 text-[10px] font-black uppercase mb-3 text-red-500 border border-red-500/20">

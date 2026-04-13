@@ -9,12 +9,14 @@ import {
 } from 'lucide-react';
 
 const INIT_INVENTORY = [
-  { id:"PRT-901", name:"Cryo-Compressor Seal",    category:"MRI Parts",   qty:2, minQty:1, status:"In Stock",     unitCost:420  },
-  { id:"PRT-442", name:"High-Voltage Cable Set",  category:"CT Hardware", qty:1, minQty:2, status:"Low Stock",    unitCost:680  },
-  { id:"PRT-118", name:"Helium Refill Valve",     category:"Consumables", qty:5, minQty:2, status:"In Stock",     unitCost:95   },
-  { id:"PRT-009", name:"Digital X-Ray Grid",      category:"Imaging",     qty:0, minQty:1, status:"Out of Stock", unitCost:1250 },
-  { id:"PRT-330", name:"RF Coil Connector Set",   category:"MRI Parts",   qty:3, minQty:2, status:"In Stock",     unitCost:310  },
-  { id:"PRT-210", name:"Gradient Amp Module",     category:"MRI Parts",   qty:1, minQty:1, status:"Low Stock",    unitCost:2100 },
+  { id:"PRT-901", name:"Cryo-Compressor Seal",      category:"MRI Parts",   qty:2, minQty:1, status:"In Stock",     unitCost:35000  },
+  { id:"PRT-442", name:"High-Voltage Cable Set",    category:"CT Hardware", qty:1, minQty:2, status:"Low Stock",    unitCost:56800  },
+  { id:"PRT-118", name:"Helium Refill Valve",       category:"Consumables", qty:5, minQty:2, status:"In Stock",     unitCost:7900   },
+  { id:"PRT-009", name:"Digital X-Ray Grid",        category:"Imaging",     qty:0, minQty:1, status:"Out of Stock", unitCost:104000 },
+  { id:"PRT-330", name:"RF Coil Connector Set",     category:"MRI Parts",   qty:3, minQty:2, status:"In Stock",     unitCost:25900  },
+  { id:"PRT-210", name:"Gradient Amplifier Module", category:"MRI Parts",   qty:1, minQty:1, status:"Low Stock",    unitCost:175000 },
+  { id:"PRT-551", name:"CT Collimator Assembly",    category:"CT Hardware", qty:2, minQty:1, status:"In Stock",     unitCost:89000  },
+  { id:"PRT-762", name:"Dialysis Blood Tubing Set", category:"Consumables", qty:12,minQty:5, status:"In Stock",     unitCost:1200   },
 ];
 
 const STATUS_STYLE = {
@@ -24,7 +26,7 @@ const STATUS_STYLE = {
 };
 
 function downloadCSV(items) {
-  const csv = ['ID,Name,Category,Qty,Status,Unit Cost',...items.map(i=>`${i.id},${i.name},${i.category},${i.qty},${i.status},$${i.unitCost}`)].join('\n');
+  const csv = ['ID,Name,Category,Qty,Status,Unit Cost (INR)',...items.map(i=>`${i.id},${i.name},${i.category},${i.qty},${i.status},₹${i.unitCost.toLocaleString('en-IN')}`)].join('\n');
   const a = document.createElement('a'); a.href=URL.createObjectURL(new Blob([csv],{type:'text/csv'})); a.download='TechInventory.csv'; a.click();
 }
 
@@ -99,7 +101,7 @@ export default function TechInventory() {
       const newPart = {
         id:`PRT-${700+Math.floor(Math.random()*200)}`,
         name: partName,
-        category:"MRI Parts", qty:2, minQty:1, status:"In Stock", unitCost:Math.floor(200+Math.random()*600)
+        category:"MRI Parts", qty:2, minQty:1, status:"In Stock", unitCost:Math.floor(15000+Math.random()*50000)
       };
       setItems(prev => {
         const updated = [newPart,...prev];
@@ -164,7 +166,7 @@ export default function TechInventory() {
         {[
           { label:"Van Capacity",     val:"84%",          sub:"420kg / 500kg",         icon:Package,     color:"text-primary"     },
           { label:"Parts Needing Attention", val:lowCount.toString().padStart(2,'0'), sub:"Low or out of stock", icon:AlertCircle, color:"text-red-500" },
-          { label:"Inventory Value",  val:`$${(totalValue/1000).toFixed(1)}k`, sub:`${items.length} SKUs tracked`, icon:RotateCcw, color:"text-secondary" },
+          { label:"Inventory Value",  val:`₹${(totalValue/100000).toFixed(1)}L`, sub:`${items.length} SKUs tracked`, icon:RotateCcw, color:"text-secondary" },
         ].map((stat,i) => (
           <div key={i} className="glass-panel p-8 rounded-[2.5rem] flex items-center gap-6">
             <div className={`p-5 rounded-2xl bg-white/50 ${stat.color} shadow-inner`}><stat.icon size={26}/></div>
@@ -216,7 +218,7 @@ export default function TechInventory() {
                     {item.category.substring(0,3).toUpperCase()}
                   </div>
                   <div>
-                    <p className="text-[9px] font-black opacity-30 uppercase tracking-widest text-primary">{item.id} · ${item.unitCost}/unit</p>
+                    <p className="text-[9px] font-black opacity-30 uppercase tracking-widest text-primary">{item.id} · ₹{item.unitCost.toLocaleString('en-IN')}/unit</p>
                     <h4 className="text-sm font-black uppercase tracking-tight text-primary">{item.name}</h4>
                     <p className="text-[10px] font-bold opacity-40 uppercase text-primary">{item.category}</p>
                   </div>

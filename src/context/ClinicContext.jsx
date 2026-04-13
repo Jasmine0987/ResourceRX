@@ -47,6 +47,9 @@ export function ClinicProvider({ children }) {
     },
   ]);
 
+  const [ownerAssets, setOwnerAssets] = useState([]);
+  const [calibrationLog, setCalibrationLog] = useState([]);
+
   // ── Step 1: User picks equipment from search → create currentBooking shell ──
   const startBooking = useCallback((equipment) => {
     const id = `RRX-${Math.floor(Math.random() * 90000) + 10000}`;
@@ -119,6 +122,23 @@ export function ClinicProvider({ children }) {
     setBookingHistory(h => h.filter(b => b.id !== id));
     setCurrentBooking(prev => (prev?.id === id ? null : prev));
   }, []);
+  const addOwnerAsset = useCallback((asset) => {
+    const newAsset = {
+      ...asset,
+      id: `ASSET-${Math.floor(Math.random() * 90000) + 10000}`,
+      listedAt: new Date().toLocaleDateString(),
+    };
+    setOwnerAssets(prev => [newAsset, ...prev]);
+  }, []);
+
+  const addCalibrationEntry = useCallback((entry) => {
+    const newEntry = {
+      ...entry,
+      id: `CAL-${Math.floor(Math.random() * 90000) + 10000}`,
+      timestamp: new Date().toLocaleDateString(),
+    };
+    setCalibrationLog(prev => [newEntry, ...prev]);
+  }, []);
 
   return (
     <ClinicContext.Provider value={{
@@ -132,6 +152,8 @@ export function ClinicProvider({ children }) {
       completePayment,
       completeBooking,
       cancelBooking,
+      ownerAssets, addOwnerAsset,          // ← new
+      calibrationLog, addCalibrationEntry, // ← new
     }}>
       {children}
     </ClinicContext.Provider>

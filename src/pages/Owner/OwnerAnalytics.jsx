@@ -56,40 +56,40 @@ const RANGES = {
   '7D': {
     data:   [42, 68, 55, 90, 77, 88, 62],
     labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
-    peak: 90, avg: 69, description: 'Last 7 days · Daily Revenue ($k)',
-    stats: { yield: '$12,400', change: '+8.2%', uptime: '99.1%', demand: 'Medium', maint: '88/100' },
+    peak: 90, avg: 69, description: 'Last 7 days · Daily Revenue (₹L)',
+    stats: { yield: '₹10.3L', change: '+8.2%', uptime: '99.1%', demand: 'Medium', maint: '88/100' },
   },
   '1M': {
     data:   [30,45,55,60,40,70,80,65,90,75,85,55,70,80,95,60,72,88,45,78,92,68,84,100,72,60,88,74,92,65],
     labels: Array.from({length:30},(_,i)=>`D${i+1}`),
-    peak: 100, avg: 73, description: 'Last 30 days · Daily Revenue ($k)',
-    stats: { yield: '$42,800', change: '+12.4%', uptime: '99.4%', demand: 'High', maint: '82/100' },
+    peak: 100, avg: 73, description: 'Last 30 days · Daily Revenue (₹L)',
+    stats: { yield: '₹35.7L', change: '+12.4%', uptime: '99.4%', demand: 'High', maint: '82/100' },
   },
   '1Y': {
     data:   [60, 75, 55, 80, 90, 100, 95, 88, 70, 65, 78, 92],
     labels: ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'],
-    peak: 100, avg: 79, description: '2025 · Monthly Revenue ($k)',
-    stats: { yield: '$428,000', change: '+19.1%', uptime: '98.7%', demand: 'High', maint: '79/100' },
+    peak: 100, avg: 79, description: '2025 · Monthly Revenue (₹Cr)',
+    stats: { yield: '₹3.57Cr', change: '+19.1%', uptime: '98.7%', demand: 'High', maint: '79/100' },
   },
   'ALL': {
     data:   [28, 40, 52, 65, 78, 95],
     labels: ['2020','2021','2022','2023','2024','2025'],
-    peak: 95, avg: 60, description: 'All-time · Yearly Revenue ($k)',
-    stats: { yield: '$2.1M', change: '+240%', uptime: '97.8%', demand: 'Critical', maint: '75/100' },
+    peak: 95, avg: 60, description: 'All-time · Yearly Revenue (₹Cr)',
+    stats: { yield: '₹17.5Cr', change: '+240%', uptime: '97.8%', demand: 'Critical', maint: '75/100' },
   },
 };
 
 // ─── Briefing fallbacks differ per range ──────────────────────────────────────
 const BRIEFING_FALLBACK = {
-  '7D': { headline:"Short-term momentum strong — weekend dip expected Monday recovery.",revenue_insight:"Daily revenue averaged $69k, Thursday peak at $90k driven by MRI surge pricing.",utilization_insight:"Dialysis units under-utilized mid-week. CT shows consistent demand.",top_recommendation:"Activate +15% weekend pricing on MRI units — demand signals show elasticity.",risk_flag:"Battery backup for Unit #3 due for inspection within 48h.","30d_projection_usd":138000,efficiency_score:82 },
-  '1M': { headline:"Fleet performing above network average with strong quarterly momentum.",revenue_insight:"Revenue grew 12.4% this period driven by high MRI utilization in Northeast.",utilization_insight:"Average utilization 87% — CT Scanner has room for yield optimization.",top_recommendation:"Relocate Unit #08 MRI to Florida to capture projected 25% seasonal premium.",risk_flag:"Liability Insurance Rider expires in 30 days — renew to avoid suspension.","30d_projection_usd":142800,efficiency_score:87 },
-  '1Y': { headline:"Best annual performance on record — expand fleet by Q1 next year.",revenue_insight:"2025 annual revenue $428k — 19% above 2024. June–August peak season drove 35% of total.",utilization_insight:"92% annual utilization well above 80% target. Zero idle asset days in Q3.",top_recommendation:"Add 2 MRI units and 1 CT Scanner before peak season to capture unmet demand.",risk_flag:"3 assets due for comprehensive maintenance overhaul before year-end.","30d_projection_usd":168000,efficiency_score:93 },
-  'ALL': { headline:"ResourceRX network has 240% revenue growth since onboarding — institutional-grade asset.",revenue_insight:"Compound annual revenue growth of 28% — outpacing industry 3x. Fleet valuation up 180%.",utilization_insight:"Near-zero idle time across all years. Equipment consistently in demand across 6+ hospital networks.",top_recommendation:"Institutional expansion recommended. Current fleet capacity is limiting revenue ceiling.",risk_flag:"Older units (2020 cohort) approaching end of serviceable life — plan replacement cycle.","30d_projection_usd":195000,efficiency_score:97 },
+  '7D': { headline:"Short-term momentum strong — weekend dip expected, Monday recovery likely.",revenue_insight:"Daily revenue averaged ₹5.8L, Thursday peak at ₹7.5L driven by MRI surge pricing at Apollo.",utilization_insight:"Dialysis units under-utilised mid-week. CT at Fortis shows consistent demand.",top_recommendation:"Activate +15% weekend pricing on MRI units — demand signals from Hyderabad show elasticity.",risk_flag:"Battery backup for Unit #3 due for inspection within 48h.","30d_projection_usd":138000,efficiency_score:82 },
+  '1M': { headline:"Fleet performing above network average with strong quarterly momentum.",revenue_insight:"Revenue grew 12.4% this period driven by high MRI utilisation across Maharashtra and Karnataka.",utilization_insight:"Average utilisation 87% — CT Scanner has room for yield optimisation in Tier-2 cities.",top_recommendation:"Relocate Unit #08 MRI to Bengaluru to capture projected 25% seasonal premium.",risk_flag:"CDSCO Compliance Certificate expires in 30 days — renew to avoid deployment suspension.","30d_projection_usd":142800,efficiency_score:87 },
+  '1Y': { headline:"Best annual performance on record — expand fleet by Q1 next year.",revenue_insight:"FY2025 revenue ₹3.57Cr — 19% above FY2024. June–August peak season drove 35% of total.",utilization_insight:"92% annual utilisation well above 80% target. Zero idle asset days in Q3 across all metros.",top_recommendation:"Add 2 MRI units and 1 CT Scanner before peak season across Delhi NCR and Mumbai.",risk_flag:"3 assets due for comprehensive AERB maintenance overhaul before year-end.","30d_projection_usd":168000,efficiency_score:93 },
+  'ALL': { headline:"ResourceRX network has 240% revenue growth since onboarding — institutional-grade asset.",revenue_insight:"Compound annual revenue growth of 28% — outpacing Indian MedTech rental market 3x.",utilization_insight:"Near-zero idle time across all years. Equipment in demand across 12+ hospital networks including AIIMS, Apollo, Fortis.",top_recommendation:"Institutional expansion recommended. Target Tier-2 cities: Nagpur, Bhopal, Vadodara, Lucknow.",risk_flag:"Older units (FY2020 cohort) approaching end of serviceable life — plan replacement cycle.","30d_projection_usd":195000,efficiency_score:97 },
 };
 
 function downloadCSV(range) {
   const { data, labels } = RANGES[range];
-  const csv = ['Period,Revenue_k,Utilization_pct', ...data.map((v,i) => `${labels[i]},$${v}k,${Math.round(v*0.87)}%`)].join('\n');
+  const csv = ['Period,Revenue_L,Utilization_pct', ...data.map((v,i) => `${labels[i]},₹${v}L,${Math.round(v*0.87)}%`)].join('\n');
   const a = document.createElement('a');
   a.href = URL.createObjectURL(new Blob([csv], {type:'text/csv'}));
   a.download = `ResourceRX_Analytics_${range}.csv`;
@@ -228,8 +228,8 @@ export default function OwnerAnalytics() {
 
           {/* Summary row */}
           <div className="mt-6 flex gap-6 pt-4 border-t border-primary/5">
-            <div><p className="text-[9px] font-black opacity-30 uppercase text-primary">Average</p><p className="font-black text-primary">${avg}k</p></div>
-            <div><p className="text-[9px] font-black opacity-30 uppercase text-primary">Peak</p><p className="font-black text-secondary">${peak}k</p></div>
+            <div><p className="text-[9px] font-black opacity-30 uppercase text-primary">Average</p><p className="font-black text-primary">₹{avg}L</p></div>
+            <div><p className="text-[9px] font-black opacity-30 uppercase text-primary">Peak</p><p className="font-black text-secondary">₹{peak}L</p></div>
             <div><p className="text-[9px] font-black opacity-30 uppercase text-primary">Data Points</p><p className="font-black text-primary">{data.length}</p></div>
             <div><p className="text-[9px] font-black opacity-30 uppercase text-primary">Period</p><p className="font-black text-primary">{range}</p></div>
           </div>
@@ -305,7 +305,7 @@ export default function OwnerAnalytics() {
               <div className="grid md:grid-cols-3 gap-4">
                 <div className="p-6 bg-emerald-50 rounded-2xl border border-emerald-100">
                   <p className="text-[9px] font-black uppercase text-emerald-600 mb-2">30-Day Projection</p>
-                  <p className="text-3xl font-black text-emerald-700">${briefing['30d_projection_usd']?.toLocaleString()}</p>
+                  <p className="text-3xl font-black text-emerald-700">₹{Math.round((briefing['30d_projection_usd']||0)*83.5/100000).toFixed(1)}L</p>
                 </div>
                 <div className="p-6 bg-secondary/10 rounded-2xl border border-secondary/20">
                   <p className="text-[9px] font-black uppercase text-primary/60 mb-2">Efficiency Score</p>

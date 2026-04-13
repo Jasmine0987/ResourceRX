@@ -3,7 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
 import {
   Calendar, Clock, MapPin, User, ChevronRight,
-  ChevronLeft, Package, AlertCircle, CheckCircle
+  ChevronLeft, Package, CheckCircle
 } from 'lucide-react';
 import { useClinic } from '../../context/ClinicContext';
 import '../../App.css';
@@ -14,10 +14,10 @@ const HOURS = [
 ];
 const DURATIONS = ["2 Hours","4 Hours","6 Hours","8 Hours","12 Hours","24 Hours","48 Hours"];
 const OPERATORS = [
-  { name: "Dr. Aris Thorne",  role: "Senior Radiologist",   rating: 4.9 },
-  { name: "Dr. Sara Chen",    role: "ICU Specialist",        rating: 4.8 },
-  { name: "Tech. James Park", role: "Equipment Technician",  rating: 4.7 },
-  { name: "Self-Operated",    role: "Your certified staff",  rating: null },
+  { name: "Dr. Arisma Gupta",      role: "Senior Radiologist",    rating: 4.9 },
+  { name: "Dr. Sara Nair",         role: "ICU Specialist",         rating: 4.8 },
+  { name: "Tech. Jaspreet Singh",  role: "Equipment Technician",   rating: 4.7 },
+  { name: "Self-Operated",         role: "Your certified staff",   rating: null },
 ];
 
 function getMiniCal(year, month) {
@@ -31,24 +31,37 @@ function getMiniCal(year, month) {
 
 const MONTH_NAMES = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
 
+function formatINR(amount) {
+  return `₹${Math.round(amount).toLocaleString('en-IN')}`;
+}
+
+const STATUS_STYLE = {
+  "ACTIVE SESSION":  "bg-emerald-500/10 text-emerald-600",
+  "IN TRANSIT":      "bg-blue-500/10 text-blue-600",
+  "PENDING SETUP":   "bg-amber-500/10 text-amber-600",
+  "COMPLETED":       "bg-gray-500/10 text-gray-500",
+  "PENDING PAYMENT": "bg-orange-500/10 text-orange-600",
+  "PENDING BOOKING": "bg-purple-500/10 text-purple-600",
+};
+
 export default function ClinicBooking() {
   const navigate = useNavigate();
   const { currentBooking, confirmBookingDetails, bookingHistory, cancelBooking } = useClinic();
 
   const today = new Date();
-  const [calYear, setCalYear]         = useState(today.getFullYear());
-  const [calMonth, setCalMonth]       = useState(today.getMonth());
-  const [selectedDay, setSelectedDay] = useState(null);
-  const [selectedTime, setSelectedTime]         = useState(null);
+  const [calYear,  setCalYear]  = useState(today.getFullYear());
+  const [calMonth, setCalMonth] = useState(today.getMonth());
+  const [selectedDay,      setSelectedDay]      = useState(null);
+  const [selectedTime,     setSelectedTime]     = useState(null);
   const [selectedDuration, setSelectedDuration] = useState(null);
   const [selectedOperator, setSelectedOperator] = useState(null);
-  const [notes, setNotes]             = useState('');
-  const [view, setView]               = useState('schedule');
+  const [notes, setNotes] = useState('');
+  const [view,  setView]  = useState('schedule');
 
   const days = getMiniCal(calYear, calMonth);
   const todayNum = today.getDate();
-  const isToday = (d) => d === todayNum && calMonth === today.getMonth() && calYear === today.getFullYear();
-  const isPast  = (d) => {
+  const isToday  = (d) => d === todayNum && calMonth === today.getMonth() && calYear === today.getFullYear();
+  const isPast   = (d) => {
     if (!d) return true;
     const date = new Date(calYear, calMonth, d);
     return date < new Date(today.getFullYear(), today.getMonth(), today.getDate());
@@ -68,11 +81,8 @@ export default function ClinicBooking() {
   const canProceed = selectedDay && selectedTime && selectedDuration && selectedOperator;
 
   const handleConfirm = () => {
-    const dateStr   = `${MONTH_NAMES[calMonth]} ${selectedDay}, ${calYear}`;
-    const timeSlot  = `${MONTH_NAMES[calMonth]} ${selectedDay} · ${selectedTime} (${selectedDuration})`;
-
-    // ── FIXED: confirmBookingDetails now adds to bookingHistory inside context
-    //    so the new booking immediately shows on dashboard + active tab ──────
+    const dateStr  = `${MONTH_NAMES[calMonth]} ${selectedDay}, ${calYear}`;
+    const timeSlot = `${MONTH_NAMES[calMonth]} ${selectedDay} · ${selectedTime} (${selectedDuration})`;
     confirmBookingDetails({
       selectedDate: dateStr,
       selectedTime,
@@ -85,13 +95,11 @@ export default function ClinicBooking() {
     navigate('/clinic/payment');
   };
 
-  const STATUS_STYLE = {
-    "ACTIVE SESSION": "bg-emerald-500/10 text-emerald-600",
-    "IN TRANSIT":     "bg-blue-500/10 text-blue-600",
-    "PENDING SETUP":  "bg-amber-500/10 text-amber-600",
-    "COMPLETED":      "bg-gray-500/10 text-gray-500",
-    "PENDING PAYMENT":"bg-orange-500/10 text-orange-600",
-    "PENDING BOOKING":"bg-purple-500/10 text-purple-600",
+  // Estimate total cost in INR
+  const estimatedTotal = () => {
+    if (!selectedDuration || !currentBooking?.price) return null;
+    const hrs = parseInt(selectedDuration);
+    return currentBooking.price * hrs;
   };
 
   return (
@@ -107,7 +115,7 @@ export default function ClinicBooking() {
       {/* Tab switcher */}
       <div className="flex gap-3 mb-8 ml-4">
         {[
-          { id: 'schedule', label: currentBooking ? `New: ${currentBooking.asset?.split(' ').slice(0,2).join(' ')}` : 'Schedule New' },
+          { id: 'schedule', label: currentBooking ? `New: ${currentBooking.asset?.split(' ').slice(0, 2).join(' ')}` : 'Schedule New' },
           { id: 'active',   label: `Active (${bookingHistory.length})` }
         ].map(tab => (
           <button key={tab.id} onClick={() => setView(tab.id)}
@@ -119,7 +127,7 @@ export default function ClinicBooking() {
 
       <AnimatePresence mode="wait">
 
-        {/* ── NEW BOOKING / SCHEDULE VIEW ── */}
+        {/* ── SCHEDULE VIEW ── */}
         {view === 'schedule' && (
           <motion.div key="schedule" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
             {!currentBooking ? (
@@ -127,7 +135,8 @@ export default function ClinicBooking() {
                 <Package className="mx-auto opacity-20" size={64} />
                 <p className="font-black text-xl opacity-40">No equipment selected</p>
                 <p className="text-sm opacity-30 font-bold">Find equipment in the catalog, then come back here to schedule</p>
-                <button onClick={() => navigate('/clinic/search')} className="bg-primary text-white px-8 py-4 rounded-2xl font-black text-sm hover:bg-secondary transition-all flex items-center gap-2 mx-auto">
+                <button onClick={() => navigate('/clinic/search')}
+                  className="bg-primary text-white px-8 py-4 rounded-2xl font-black text-sm hover:bg-secondary transition-all flex items-center gap-2 mx-auto">
                   Browse Equipment <ChevronRight size={16} />
                 </button>
               </div>
@@ -135,7 +144,7 @@ export default function ClinicBooking() {
               <div className="grid lg:grid-cols-3 gap-8">
                 <div className="lg:col-span-2 space-y-6">
 
-                  {/* Selected equipment banner */}
+                  {/* Equipment banner */}
                   <div className="glass-panel rounded-[2.5rem] p-8 flex items-center gap-6 border border-secondary/20">
                     <div className="w-14 h-14 bg-secondary/10 rounded-2xl flex items-center justify-center text-secondary shrink-0">
                       <Package size={28} />
@@ -143,9 +152,13 @@ export default function ClinicBooking() {
                     <div className="flex-1">
                       <p className="text-[10px] font-black uppercase opacity-40 mb-1">Booking</p>
                       <p className="font-black text-lg tracking-tight">{currentBooking.asset}</p>
-                      <p className="text-xs font-bold opacity-50">{currentBooking.from} · ${currentBooking.price}/hr</p>
+                      <p className="text-xs font-bold opacity-50">
+                        {currentBooking.from} · {formatINR(currentBooking.price)}/hr
+                      </p>
                     </div>
-                    <span className="text-[10px] font-black bg-secondary/10 text-secondary px-3 py-1 rounded-full uppercase">REF: {currentBooking.id}</span>
+                    <span className="text-[10px] font-black bg-secondary/10 text-secondary px-3 py-1 rounded-full uppercase">
+                      REF: {currentBooking.id}
+                    </span>
                   </div>
 
                   {/* Calendar */}
@@ -200,7 +213,7 @@ export default function ClinicBooking() {
                     </div>
                   </div>
 
-                  {/* Operator selection */}
+                  {/* Operator */}
                   <div className="glass-panel rounded-[3rem] p-10 space-y-4">
                     <h4 className="text-[10px] font-black uppercase opacity-40 tracking-widest mb-2">Assign Operator</h4>
                     {OPERATORS.map(op => (
@@ -237,11 +250,11 @@ export default function ClinicBooking() {
                     <h4 className="text-xs font-black uppercase text-secondary tracking-widest">Booking Summary</h4>
                     <div className="space-y-4">
                       {[
-                        { label: "Equipment", val: currentBooking.asset?.split(' ').slice(0,3).join(' ') },
-                        { label: "Date",     val: selectedDay ? `${MONTH_NAMES[calMonth]} ${selectedDay}` : "Not selected" },
-                        { label: "Time",     val: selectedTime || "Not selected" },
-                        { label: "Duration", val: selectedDuration || "Not selected" },
-                        { label: "Operator", val: selectedOperator?.name || "Not selected" },
+                        { label: "Equipment", val: currentBooking.asset?.split(' ').slice(0, 3).join(' ') },
+                        { label: "Date",      val: selectedDay ? `${MONTH_NAMES[calMonth]} ${selectedDay}` : "Not selected" },
+                        { label: "Time",      val: selectedTime     || "Not selected" },
+                        { label: "Duration",  val: selectedDuration || "Not selected" },
+                        { label: "Operator",  val: selectedOperator?.name || "Not selected" },
                       ].map(r => (
                         <div key={r.label} className="flex justify-between gap-4">
                           <p className="text-[10px] font-black opacity-40 uppercase">{r.label}</p>
@@ -251,11 +264,16 @@ export default function ClinicBooking() {
                       <div className="pt-4 border-t border-white/10">
                         <div className="flex justify-between">
                           <p className="text-[10px] font-black opacity-40 uppercase">Est. Total</p>
-                          <p className="font-black text-secondary">
-                            {selectedDuration
-                              ? `$${currentBooking.price * parseInt(selectedDuration)}`
-                              : `$${currentBooking.price}/hr`}
-                          </p>
+                          <div className="text-right">
+                            <p className="font-black text-secondary">
+                              {estimatedTotal()
+                                ? formatINR(estimatedTotal())
+                                : `${formatINR(currentBooking.price)}/hr`}
+                            </p>
+                            {estimatedTotal() && (
+                              <p className="text-[9px] opacity-30">excl. GST & logistics</p>
+                            )}
+                          </div>
                         </div>
                       </div>
                     </div>
@@ -284,7 +302,7 @@ export default function ClinicBooking() {
                 <p className="text-sm mt-1">Complete a booking to see it here</p>
               </div>
             )}
-            {bookingHistory.map((booking) => {
+            {bookingHistory.map(booking => {
               const s = STATUS_STYLE[booking.status] || "bg-gray-500/10 text-gray-500";
               return (
                 <div key={booking.id} className="glass-panel p-8 rounded-[3rem] flex flex-col xl:flex-row gap-8 items-center">
@@ -299,15 +317,15 @@ export default function ClinicBooking() {
 
                   <div className="flex-1 grid grid-cols-1 md:grid-cols-3 gap-6 w-full">
                     <div>
-                      <p className="text-[9px] font-black opacity-30 uppercase flex items-center gap-1 mb-1"><Clock size={10}/> Time</p>
+                      <p className="text-[9px] font-black opacity-30 uppercase flex items-center gap-1 mb-1"><Clock size={10} /> Time</p>
                       <p className="font-bold text-sm">{booking.timeSlot || "TBD"}</p>
                     </div>
                     <div>
-                      <p className="text-[9px] font-black opacity-30 uppercase flex items-center gap-1 mb-1"><User size={10}/> Operator</p>
+                      <p className="text-[9px] font-black opacity-30 uppercase flex items-center gap-1 mb-1"><User size={10} /> Operator</p>
                       <p className="font-bold text-sm">{booking.operator || "TBD"}</p>
                     </div>
                     <div>
-                      <p className="text-[9px] font-black opacity-30 uppercase flex items-center gap-1 mb-1"><MapPin size={10}/> Source</p>
+                      <p className="text-[9px] font-black opacity-30 uppercase flex items-center gap-1 mb-1"><MapPin size={10} /> Source</p>
                       <p className="font-bold text-sm">{booking.from || booking.location || "—"}</p>
                     </div>
                   </div>

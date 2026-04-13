@@ -8,13 +8,16 @@ import {
 } from 'lucide-react';
 
 const ALL_LOGS = [
-  { id: "LOG-RX-882", asset: "Siemens Magnetom Sola",   clinic: "Summit Health NJ",    date: "JAN 12, 2026", status: "VERIFIED",  type: "Heavy Transit", tech: "E. Thorne",   amount: "$4,800" },
-  { id: "LOG-RX-774", asset: "GE Revolution CT",         clinic: "Northwell Health NY", date: "JAN 10, 2026", status: "VERIFIED",  type: "Emergency",    tech: "S. Chen",     amount: "$3,200" },
-  { id: "LOG-RX-441", asset: "Dialysis System V4",       clinic: "City General",        date: "JAN 08, 2026", status: "ARCHIVED",  type: "Standard",     tech: "J. Park",     amount: "$1,400" },
-  { id: "LOG-RX-112", asset: "Mobile X-Ray Unit",        clinic: "Mercy Hospital",      date: "JAN 05, 2026", status: "VERIFIED",  type: "Heavy Transit", tech: "E. Thorne",   amount: "$900"   },
-  { id: "LOG-RX-099", asset: "Ventilator Array (x4)",    clinic: "Boston Med Center",   date: "DEC 28, 2025", status: "INCIDENT",  type: "Emergency",    tech: "A. Kumar",    amount: "$2,100" },
-  { id: "LOG-RX-066", asset: "Philips CT 256",           clinic: "Penn Medicine",       date: "DEC 20, 2025", status: "VERIFIED",  type: "Standard",     tech: "S. Chen",     amount: "$3,600" },
-  { id: "LOG-RX-043", asset: "Portable Ultrasound",      clinic: "Cleveland Clinic",    date: "DEC 15, 2025", status: "ARCHIVED",  type: "Standard",     tech: "J. Park",     amount: "$500"   },
+  { id: "LOG-RX-882", asset: "Siemens Magnetom Vida 3T",      clinic: "Apollo Hospitals Pune",       date: "JAN 12, 2026", status: "VERIFIED",  type: "Heavy Transit", tech: "A. Mehta",   amount: "₹42,000"  },
+  { id: "LOG-RX-774", asset: "GE Revolution CT 512-Slice",    clinic: "Manipal Hospital Chennai",    date: "JAN 10, 2026", status: "VERIFIED",  type: "Emergency",     tech: "P. Nair",    amount: "₹68,000"  },
+  { id: "LOG-RX-441", asset: "Fresenius 5008S CorDiax × 2",  clinic: "KIMS Hospital Hyderabad",     date: "JAN 08, 2026", status: "ARCHIVED",  type: "Standard",      tech: "V. Reddy",   amount: "₹18,500"  },
+  { id: "LOG-RX-112", asset: "Philips DigitalDiagnost C90",   clinic: "AIIMS New Delhi",             date: "JAN 05, 2026", status: "VERIFIED",  type: "Heavy Transit", tech: "S. Sharma",  amount: "₹12,000"  },
+  { id: "LOG-RX-099", asset: "Draeger Evita Infinity V500 ×4",clinic: "Fortis Hospital Mumbai",      date: "DEC 28, 2025", status: "INCIDENT",  type: "Emergency",     tech: "A. Mehta",   amount: "₹58,000"  },
+  { id: "LOG-RX-066", asset: "Siemens Somatom Force",         clinic: "Narayana Health Bengaluru",   date: "DEC 20, 2025", status: "VERIFIED",  type: "Standard",      tech: "P. Nair",    amount: "₹75,000"  },
+  { id: "LOG-RX-043", asset: "Philips IntelliVue MX800",      clinic: "Medanta Delhi",               date: "DEC 15, 2025", status: "ARCHIVED",  type: "Standard",      tech: "V. Reddy",   amount: "₹8,500"   },
+  { id: "LOG-RX-031", asset: "Intuitive Da Vinci Xi System",  clinic: "Apollo Chennai",              date: "DEC 10, 2025", status: "VERIFIED",  type: "Heavy Transit", tech: "A. Mehta",   amount: "₹1,20,000" },
+  { id: "LOG-RX-019", asset: "GE SIGNA Artist 1.5T",          clinic: "Wockhardt Hospital Mumbai",   date: "DEC 05, 2025", status: "VERIFIED",  type: "Heavy Transit", tech: "S. Sharma",  amount: "₹35,000"  },
+  { id: "LOG-RX-008", asset: "Nihon Kohden TEC-5600",         clinic: "Yashoda Hospital Hyderabad",  date: "NOV 28, 2025", status: "ARCHIVED",  type: "Standard",      tech: "P. Nair",    amount: "₹6,500"   },
 ];
 
 const STATUS_STYLE = {
@@ -58,9 +61,9 @@ export default function LogisticsLogs() {
       const matchT = typeFilter === 'All' || l.type === typeFilter;
       return matchQ && matchT;
     });
-  }, [query, typeFilter]);
+  }, [query, typeFilter, allLogs]);
 
-  const verified = filtered.filter(l => l.status === 'VERIFIED').length;
+  const verified  = filtered.filter(l => l.status === 'VERIFIED').length;
   const incidents = filtered.filter(l => l.status === 'INCIDENT').length;
 
   return (
@@ -237,7 +240,7 @@ export default function LogisticsLogs() {
                         </div>
                         <div>
                           <p className="text-[9px] font-black opacity-30 uppercase mb-1 text-primary">Transaction</p>
-                          <p className="font-black text-primary">{log.amount}</p>
+                          <p className="font-black text-emerald-600">{log.amount}</p>
                         </div>
                         <div>
                           <p className="text-[9px] font-black opacity-30 uppercase mb-1 text-primary">Verification</p>

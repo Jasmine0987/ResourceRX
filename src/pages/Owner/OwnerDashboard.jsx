@@ -8,21 +8,21 @@ import {
 import { useClinic } from '../../context/ClinicContext';
 
 const ALERTS_INIT = [
-  { id: 1, type: 'Booking',     msg: 'New MRI Request: Mercy Clinic',      time: '2m ago',  route: '/owner/requests',    urgent: true  },
+  { id: 1, type: 'Booking',     msg: 'New MRI Request: Apollo Hospital Hyderabad',      time: '2m ago',  route: '/owner/requests',    urgent: true  },
   { id: 2, type: 'Maintenance', msg: 'CT Scanner #04 Sensor Alert',         time: '14m ago', route: '/owner/analytics',   urgent: true  },
-  { id: 3, type: 'Finance',     msg: 'Settlement $12,400 Processed',        time: '1h ago',  route: '/owner/settlements', urgent: false },
-  { id: 4, type: 'Dispatch',    msg: 'Siemens MRI delivered to Summit NJ',  time: '2h ago',  route: '/owner/dispatch',    urgent: false },
+  { id: 3, type: 'Finance',     msg: 'Settlement ₹10.4L Processed',        time: '1h ago',  route: '/owner/settlements', urgent: false },
+  { id: 4, type: 'Dispatch',    msg: 'Siemens MRI delivered to KIMS Hyderabad',  time: '2h ago',  route: '/owner/dispatch',    urgent: false },
 ];
 
 export default function OwnerDashboard() {
   const navigate = useNavigate();
   const { ownerAssets } = useClinic();
   const [alerts, setAlerts]   = useState(ALERTS_INIT);
-  const [revenue, setRevenue] = useState(128400);
+  const [revenue, setRevenue] = useState(10700000); // ₹1.07Cr
 
   useEffect(() => {
     const newAlerts = [
-      { type: 'Booking', msg: 'New CT Request: Johns Hopkins',  route: '/owner/requests',  urgent: true  },
+      { type: 'Booking', msg: 'New CT Request: Fortis Bengaluru',  route: '/owner/requests',  urgent: true  },
       { type: 'Finance', msg: 'Yield Report Ready for Review',  route: '/owner/yield',     urgent: false },
       { type: 'Vault',   msg: 'ISO Certificate expiring soon',  route: '/owner/vault',     urgent: true  },
     ];
@@ -30,7 +30,7 @@ export default function OwnerDashboard() {
     const t = setInterval(() => {
       const a = newAlerts[idx % newAlerts.length];
       setAlerts(prev => [{ id: Date.now(), time: 'Just now', ...a }, ...prev.slice(0, 5)]);
-      setRevenue(r => r + Math.round(Math.random() * 500));
+      setRevenue(r => r + Math.round(Math.random() * 42000));
       idx++;
     }, 20000);
     return () => clearInterval(t);
@@ -41,8 +41,8 @@ export default function OwnerDashboard() {
   const glassStyle = "glass-panel p-10 rounded-[3.5rem] relative overflow-hidden transition-all duration-500";
 
   const stats = [
-    { label: "Fleet Valuation",  value: "$4.2M",   sub: "12 Active Assets",  icon: Zap,       color: "text-secondary",   route: "/owner/vault"       },
-    { label: "Monthly Revenue",  value: `$${(revenue/1000).toFixed(1)}k`, sub: "+14.2% Growth", icon: DollarSign, color: "text-emerald-500", route: "/owner/settlements" },
+    { label: "Fleet Valuation",  value: "₹35Cr",   sub: "12 Active Assets — India Network",  icon: Zap,       color: "text-secondary",   route: "/owner/vault"       },
+    { label: "Monthly Revenue",  value: `₹${(revenue*83.5/100000).toFixed(1)}L`, sub: "+14.2% Growth YoY", icon: DollarSign, color: "text-emerald-500", route: "/owner/settlements" },
     { label: "Avg. Utilization", value: "92%",     sub: "Critical Demand",   icon: Activity,  color: "text-primary",     route: "/owner/analytics"   },
   ];
 
@@ -102,30 +102,40 @@ export default function OwnerDashboard() {
               Live Dispatch <ArrowUpRight size={14} />
             </button>
           </div>
-          <div className="flex-1 my-6 bg-primary/5 rounded-[2.5rem] border border-white/50 relative overflow-hidden min-h-[160px]">
-            <div className="absolute inset-0 opacity-10 bg-[radial-gradient(#1d3557_2px,transparent_2px)] [background-size:30px_30px]" />
-            {[{x:'30%',y:'45%',d:0},{x:'60%',y:'25%',d:.3},{x:'75%',y:'60%',d:.6},{x:'20%',y:'70%',d:.9}].map((p, i) => (
-              <motion.div key={i} className="absolute" style={{ left: p.x, top: p.y }}
-                animate={{ scale: [1,1.4,1], opacity: [0.7,0.3,0.7] }}
-                transition={{ duration: 2.5, repeat: Infinity, delay: p.d }}>
-                <div className="w-4 h-4 bg-secondary rounded-full border-2 border-white shadow-lg" />
-              </motion.div>
-            ))}
-          </div>
-          <div className="grid grid-cols-4 gap-4">
-            {(ownerAssets || []).slice(0,8).map((a, i) => {
-              const pct = a.status === 'Deployed' ? 100 : a.status === 'Available' ? 45 : 20;
+          {/* Fleet Asset Grid — clear status per asset */}
+          <div className="flex-1 my-4 grid grid-cols-2 gap-3">
+            {[
+              { name:"Siemens Magnetom Vida 3T",  type:"MRI",         city:"Mumbai",    status:"Deployed",   util:94, rate:"₹35k/hr" },
+              { name:"GE Revolution CT 512",       type:"CT Scanner",  city:"Hyderabad", status:"Deployed",   util:88, rate:"₹25k/hr" },
+              { name:"Fresenius 5008S CorDiax",    type:"Dialysis",    city:"Chennai",   status:"Available",  util:0,  rate:"₹12k/hr" },
+              { name:"Draeger Evita V500",          type:"Ventilator",  city:"Delhi",     status:"In Transit", util:55, rate:"₹16k/hr" },
+              { name:"Philips IntelliVue MX800",   type:"Monitor",     city:"Bengaluru", status:"Deployed",   util:76, rate:"₹9k/hr"  },
+              { name:"Da Vinci Xi System",          type:"Surg. Robot", city:"Mumbai",    status:"Deployed",   util:62, rate:"₹72k/hr" },
+              { name:"Philips HeartStart MRx",     type:"Defib.",      city:"Pune",      status:"Available",  util:0,  rate:"₹7.5k/hr"},
+              { name:"Canon Aquilion ONE 320",     type:"CT Scanner",  city:"Kolkata",   status:"Maintenance",util:0,  rate:"₹22k/hr" },
+            ].map((a, i) => {
+              const statusColor = a.status==='Deployed'?'text-emerald-600 bg-emerald-50':a.status==='Available'?'text-secondary bg-secondary/10':a.status==='In Transit'?'text-blue-600 bg-blue-50':'text-amber-600 bg-amber-50';
               return (
-              <div key={i} onClick={() => navigate('/owner/analytics')} className="cursor-pointer group">
-                <div className="flex justify-between text-[9px] font-black mb-1.5 text-primary opacity-60">
-                  <span className="truncate">{a.name?.split(' ').slice(0,2).join(' ') || a.type}</span>
-                  <span className={`${a.status==='Deployed'?'text-emerald-600':a.status==='Available'?'text-secondary':'text-amber-500'}`}>{a.status}</span>
+                <div key={i} onClick={() => navigate('/owner/analytics')}
+                  className="p-4 bg-white/40 rounded-2xl border border-white hover:bg-white/70 cursor-pointer transition-all group">
+                  <div className="flex justify-between items-start mb-2">
+                    <div className="flex-1 min-w-0">
+                      <p className="text-[8px] font-black uppercase opacity-40 text-primary">{a.type} · {a.city}</p>
+                      <p className="text-[10px] font-black text-primary truncate">{a.name}</p>
+                    </div>
+                    <span className={`text-[7px] font-black uppercase px-2 py-0.5 rounded-full shrink-0 ml-2 ${statusColor}`}>{a.status}</span>
+                  </div>
+                  <div className="flex justify-between items-center">
+                    <div className="flex-1 mr-3">
+                      <div className="h-1.5 bg-primary/5 rounded-full overflow-hidden">
+                        <motion.div initial={{width:0}} animate={{width:`${a.util}%`}} transition={{duration:1.2, delay:0.3+i*0.08}}
+                          className={`h-full rounded-full ${a.util>80?'bg-emerald-400':a.util>40?'bg-secondary':'bg-primary/20'}`}/>
+                      </div>
+                      {a.util > 0 && <p className="text-[7px] font-black opacity-30 text-primary mt-0.5">{a.util}% utilised</p>}
+                    </div>
+                    <p className="text-[8px] font-black text-secondary shrink-0">{a.rate}</p>
+                  </div>
                 </div>
-                <div className="h-1.5 bg-primary/5 rounded-full overflow-hidden">
-                  <motion.div initial={{ width: 0 }} animate={{ width: `${pct}%` }} transition={{ duration: 1.2, delay: 0.5+i*0.1 }}
-                    className="h-full bg-primary rounded-full group-hover:bg-secondary transition-colors" />
-                </div>
-              </div>
               );
             })}
           </div>

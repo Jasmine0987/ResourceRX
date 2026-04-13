@@ -4,15 +4,15 @@ import { useNavigate } from 'react-router-dom';
 import { Truck, MapPin, Navigation, ShieldCheck, Clock, Search, Filter, ExternalLink, Activity, ChevronLeft, Download } from 'lucide-react';
 
 const DEPLOYMENTS_INIT = [
-  { id:"DEP-992", asset:"Siemens Magnetom Sola", status:"In Transit", destination:"Central Mercy Clinic", eta:14, progress:65, severity:"High", origin:"Long Island NY" },
-  { id:"DEP-884", asset:"GE Revolution CT", status:"On Site", destination:"Northwell Health NY", eta:0, progress:100, severity:"Standard", origin:"Hartford CT" },
-  { id:"DEP-771", asset:"Dialysis System V4", status:"Pending Pickup", destination:"City General", eta:0, progress:10, severity:"Standard", origin:"Newark NJ" },
+  { id:"DEP-992", asset:"Siemens Magnetom Vida 3T", status:"In Transit",    destination:"Apollo Hospital Hyderabad", eta:14, progress:65, severity:"High",     origin:"Mumbai, MH" },
+  { id:"DEP-884", asset:"GE Revolution CT 512",     status:"On Site",       destination:"AIIMS Delhi",               eta:0,  progress:100,severity:"Standard", origin:"Bengaluru, KA" },
+  { id:"DEP-771", asset:"Fresenius 5008S Dialysis", status:"Pending Pickup",destination:"Fortis Hospital Chennai",   eta:0,  progress:10, severity:"Standard", origin:"Pune, MH" },
 ];
 
 const HISTORY = [
-  { id:"RX-ALPHA-01", partner:"Starlink Logistics #4491", date:"Jan 12, 2026", asset:"Siemens MRI" },
-  { id:"RX-ALPHA-02", partner:"MedFleet Partners #8820", date:"Jan 10, 2026", asset:"GE CT Scanner" },
-  { id:"RX-ALPHA-03", partner:"Starlink Logistics #4491", date:"Jan 08, 2026", asset:"Dialysis V3"  },
+  { id:"RX-IN-2401", partner:"Gati Medical Logistics #4491", date:"Jan 12, 2026", asset:"Siemens MRI 3T"     },
+  { id:"RX-IN-2389", partner:"BlueDart MedExpress #8820",    date:"Jan 10, 2026", asset:"GE Revolution CT"   },
+  { id:"RX-IN-2371", partner:"Gati Medical Logistics #4491", date:"Jan 08, 2026", asset:"Fresenius Dialysis" },
 ];
 
 function downloadCSV() {
@@ -156,7 +156,7 @@ export default function OwnerDispatch() {
                   <td className="px-6 py-5 text-xs font-black uppercase text-primary">{row.partner}</td>
                   <td className="px-6 py-5 text-xs opacity-50 text-primary">{row.date}</td>
                   <td className="px-6 py-5 text-right rounded-r-3xl">
-                    <button onClick={()=>navigate('/owner/analytics')} className="p-2 hover:bg-primary/5 rounded-lg transition-colors text-secondary hover:text-primary" title="View Analytics"><ExternalLink size={16}/></button>
+                    <button onClick={()=>navigate('/owner/analytics')} className="p-2 hover:bg-primary/5 rounded-lg transition-colors text-secondary hover:text-primary transition-colors" title="View Analytics"><ExternalLink size={16}/></button>
                   </td>
                 </tr>
               ))}

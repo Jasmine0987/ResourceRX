@@ -1,13 +1,14 @@
 import React, { useState } from 'react';
+import { useCurrency } from '../../hooks/useRealData';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
 import { Wallet, ArrowUpRight, Download, ShieldCheck, Clock, Banknote, History, Lock, ChevronRight, ChevronLeft, Loader, CheckCircle2 } from 'lucide-react';
 
 const TXS = [
-  { id:"SET-8821", facility:"Mayo Clinic",    amount:24500, status:"Available",  date:"Jan 12, 2026", type:"Rental Payout"       },
-  { id:"SET-8819", facility:"Johns Hopkins",  amount:18200, status:"In Escrow",  date:"Jan 14, 2026", type:"Security Deposit"    },
-  { id:"SET-8790", facility:"Mercy Health",   amount:12400, status:"Processing", date:"Jan 10, 2026", type:"Service Fee Refund"  },
-  { id:"SET-8765", facility:"Penn Medicine",  amount:9800,  status:"Available",  date:"Jan 08, 2026", type:"Rental Payout"       },
+  { id:"SET-8821", facility:"Apollo Hospitals Hyderabad",  amount:2045750, status:"Available",  date:"Jan 12, 2026", type:"Rental Payout"      },
+  { id:"SET-8819", facility:"Fortis Hospital Bengaluru",   amount:1519700, status:"In Escrow",  date:"Jan 14, 2026", type:"Security Deposit"   },
+  { id:"SET-8790", facility:"AIIMS Delhi",                 amount:1035400, status:"Processing", date:"Jan 10, 2026", type:"Service Fee Refund" },
+  { id:"SET-8765", facility:"Rainbow Children's Hospital", amount:818300,  status:"Available",  date:"Jan 08, 2026", type:"Rental Payout"      },
 ];
 
 const STATUS_STYLE = {
@@ -22,15 +23,20 @@ function downloadCSV() {
 }
 
 export default function OwnerSettlements() {
+  const { rates, format, source: ratesSource } = useCurrency('USD');
+  const [displayCurrency, setDisplayCurrency] = useState('USD');
+  const CURRENCIES = ['INR', 'USD', 'EUR', 'GBP', 'JPY', 'SGD', 'CAD', 'AUD'];
   const navigate = useNavigate();
   const [withdrawing, setWithdrawing] = useState(false);
   const [withdrawn, setWithdrawn] = useState(false);
   const [expanded, setExpanded] = useState(null);
   const [bankEdit, setBankEdit] = useState(false);
-  const [bankAccount, setBankAccount] = useState('Chase Business Operating');
+  const [bankAccount, setBankAccount] = useState('HDFC Bank — Current A/C');
 
   const available = TXS.filter(t=>t.status==='Available').reduce((s,t)=>s+t.amount,0);
   const escrow    = TXS.filter(t=>t.status==='In Escrow').reduce((s,t)=>s+t.amount,0);
+  const fmtAvail  = format(available, displayCurrency);
+  const fmtEscrow = format(escrow, displayCurrency);
 
   const doWithdraw = () => {
     setWithdrawing(true);
@@ -49,7 +55,7 @@ export default function OwnerSettlements() {
         </div>
         <button onClick={doWithdraw} disabled={withdrawing||withdrawn}
           className="bg-primary text-white px-8 py-5 rounded-3xl font-black text-[10px] uppercase tracking-[0.2em] flex items-center gap-3 hover:bg-secondary hover:text-primary transition-all shadow-xl disabled:opacity-60">
-          {withdrawing?<><Loader size={16} className="animate-spin"/> Processing…</>:withdrawn?<><CheckCircle2 size={16}/> Withdrawn!</>:<>Withdraw ${available.toLocaleString()} <ArrowUpRight size={16}/></>}
+          {withdrawing?<><Loader size={16} className="animate-spin"/> Processing…</>:withdrawn?<><CheckCircle2 size={16}/> Withdrawn!</>:<>Withdraw ₹{available.toLocaleString('en-IN')} <ArrowUpRight size={16}/></>}
         </button>
       </div>
 
@@ -59,17 +65,17 @@ export default function OwnerSettlements() {
             <Wallet className="text-secondary" size={32}/>
             <p className="text-[10px] font-black opacity-50 uppercase tracking-widest">Available Balance</p>
           </div>
-          <h3 className="text-5xl font-black tracking-tighter mb-2">${available.toLocaleString()}.00</h3>
+          <h3 className="text-5xl font-black tracking-tighter mb-2">₹{available.toLocaleString('en-IN')}</h3>
           <p className="text-[10px] font-bold opacity-40 uppercase">Ready for immediate liquidation</p>
         </motion.div>
         <div className={glass}>
           <div className="flex justify-between items-start mb-10"><Clock className="text-primary/20" size={32}/><p className="text-[10px] font-black opacity-30 uppercase tracking-widest text-primary">In Escrow</p></div>
-          <h3 className="text-4xl font-black tracking-tighter mb-2 text-primary">${escrow.toLocaleString()}.00</h3>
+          <h3 className="text-4xl font-black tracking-tighter mb-2 text-primary">₹{escrow.toLocaleString('en-IN')}</h3>
           <p className="text-[10px] font-bold text-secondary uppercase">Awaiting equipment return scan</p>
         </div>
         <div className={glass}>
           <div className="flex justify-between items-start mb-10"><Banknote className="text-primary/20" size={32}/><p className="text-[10px] font-black opacity-30 uppercase tracking-widest text-primary">YTD Earnings</p></div>
-          <h3 className="text-4xl font-black tracking-tighter mb-2 text-primary">$892,400.00</h3>
+          <h3 className="text-4xl font-black tracking-tighter mb-2 text-primary">₹7.45Cr</h3>
           <p className="text-[10px] font-bold text-emerald-500 uppercase">+22% vs last fiscal year</p>
         </div>
       </div>
@@ -80,7 +86,15 @@ export default function OwnerSettlements() {
             <div className="w-12 h-12 bg-primary/5 rounded-2xl flex items-center justify-center"><History size={20} className="text-primary"/></div>
             <h3 className="text-2xl font-black tracking-tighter uppercase italic text-primary">Payment Ledger</h3>
           </div>
-          <button onClick={downloadCSV} className="flex items-center gap-2 text-[10px] font-black uppercase opacity-30 hover:opacity-100 transition-opacity text-primary"><Download size={14}/> Download 1099-K</button>
+          <div className="flex items-center gap-2 mr-4">
+              <span className="text-[9px] font-black uppercase opacity-40 text-primary">Currency</span>
+              <select value={displayCurrency} onChange={e=>setDisplayCurrency(e.target.value)}
+                className="glass-panel text-[10px] font-black uppercase px-3 py-2 rounded-xl outline-none text-primary cursor-pointer">
+                {CURRENCIES.map(c=><option key={c} value={c}>{c}</option>)}
+              </select>
+              {ratesSource && <span className="text-[8px] font-bold opacity-30 uppercase text-primary">{ratesSource}</span>}
+            </div>
+            <button onClick={downloadCSV} className="flex items-center gap-2 text-[10px] font-black uppercase opacity-30 hover:opacity-100 transition-opacity text-primary"><Download size={14}/> Download 1099-K</button>
         </div>
         <div className="space-y-4">
           {TXS.map((tx, i) => (
@@ -97,7 +111,7 @@ export default function OwnerSettlements() {
                 </div>
                 <div className="flex items-center gap-10">
                   <div className="text-right">
-                    <p className="text-2xl font-black tracking-tighter text-primary">+${tx.amount.toLocaleString()}</p>
+                    <p className="text-2xl font-black tracking-tighter text-primary">+{format(tx.amount, displayCurrency)}</p>
                     <span className={`text-[9px] font-black uppercase px-3 py-1 rounded-full border ${STATUS_STYLE[tx.status]}`}>{tx.status}</span>
                   </div>
                   <ChevronRight className={`opacity-20 group-hover:opacity-100 transition-all text-primary ${expanded===tx.id?'rotate-90':''}`}/>
@@ -128,13 +142,13 @@ export default function OwnerSettlements() {
           {/* Fixed-height chart with relative bars */}
           <div className="flex items-end gap-2 h-28 w-full">
             {[
-              {h:40,d:'Mon',v:'$40k'},
-              {h:70,d:'Tue',v:'$70k'},
-              {h:45,d:'Wed',v:'$45k'},
-              {h:90,d:'Thu',v:'$90k'},
-              {h:65,d:'Fri',v:'$65k'},
-              {h:80,d:'Sat',v:'$80k'},
-              {h:100,d:'Sun',v:'$100k'},
+              {h:40,d:'Mon',v:'₹3.3L'},
+              {h:70,d:'Tue',v:'₹5.8L'},
+              {h:45,d:'Wed',v:'₹3.8L'},
+              {h:90,d:'Thu',v:'₹7.5L'},
+              {h:65,d:'Fri',v:'₹5.4L'},
+              {h:80,d:'Sat',v:'₹6.7L'},
+              {h:100,d:'Sun',v:'₹8.4L'},
             ].map((bar,i)=>(
               <div key={i} className="flex-1 flex flex-col items-end justify-end gap-1" style={{height:'100%'}}>
                 <p className="text-[7px] font-black text-secondary" style={{marginBottom:2}}>{bar.v}</p>
@@ -164,7 +178,7 @@ export default function OwnerSettlements() {
             ) : (
               <div>
                 <p className="text-xs font-black uppercase tracking-tight text-primary">{bankAccount}</p>
-                <p className="text-[10px] font-bold opacity-30 text-primary">**** **** 8821</p>
+                <p className="text-[10px] font-bold opacity-30 text-primary">XXXX XXXX 8821</p>
               </div>
             )}
             <button onClick={()=>setBankEdit(true)} className="ml-auto text-[9px] font-black text-secondary uppercase border-b border-secondary/20">Edit</button>

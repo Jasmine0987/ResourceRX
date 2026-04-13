@@ -47,15 +47,15 @@ import { useNavigate } from 'react-router-dom';
 import { CalendarClock, MapPin, CheckCircle2, XCircle, Clock, ShieldAlert, Zap, ChevronLeft, Loader, Brain } from 'lucide-react';
 
 const INIT_REQUESTS = [
-  { id:"REQ-2025-091", facility:"Saint Jude Medical Center",  location:"Los Angeles, CA", asset:"Siemens Magnetom Sola (MRI)",   period:"Jan 20 – Feb 28", valuation:"$74,500", urgency:"CRITICAL", credibility:98, context:"Critical MRI shortage — 3 surgical plans pending imaging results." },
-  { id:"REQ-2025-094", facility:"Summit Children's Hospital", location:"Denver, CO",       asset:"GE Revolution CT Scanner",      period:"Feb 05 – Mar 05", valuation:"$42,000", urgency:"STANDARD", credibility:100, context:"Routine pediatric screening programme — 120 patients on waiting list." },
-  { id:"REQ-2025-098", facility:"Mercy General Hospital",     location:"Chicago, IL",      asset:"Dialysis System V4 (×2 units)", period:"Mar 01 – Apr 01", valuation:"$18,200", urgency:"STANDARD", credibility:95, context:"Renal unit expansion — two legacy machines decommissioned last week." },
+  { id:"REQ-2025-091", facility:"Apollo Hospitals Hyderabad",  location:"Hyderabad, TG", asset:"Siemens Magnetom Vida 3T (MRI)",  period:"Jan 20 – Feb 28", valuation:"₹62.2L", urgency:"CRITICAL", credibility:98, context:"Critical MRI shortage — 3 cardiac surgical plans pending imaging results at Apollo HITEC." },
+  { id:"REQ-2025-094", facility:"Rainbow Children's Hospital", location:"Bengaluru, KA",  asset:"GE Revolution CT 512-Slice",      period:"Feb 05 – Mar 05", valuation:"₹35.1L", urgency:"STANDARD", credibility:100, context:"Routine paediatric screening programme — 120 children on waiting list at Rainbow Marathahalli." },
+  { id:"REQ-2025-098", facility:"Fortis Memorial Gurugram",    location:"Gurugram, HR",   asset:"Fresenius 5008S Dialysis (×2)",   period:"Mar 01 – Apr 01", valuation:"₹15.2L", urgency:"STANDARD", credibility:95, context:"Renal unit expansion at Fortis Gurugram — two legacy Nipro machines decommissioned last week." },
 ];
 
 const AI_FALLBACKS = {
-  "REQ-2025-091": { recommendation:"APPROVE", risk_level:"Low",    summary:"Saint Jude has a 98% trust score with zero payment defaults. The MRI is urgently needed for surgical planning — denial could delay patient care.", fleet_impact:"West Coast fleet moves to 85% utilization. One backup Magnetom remains available in Sacramento hub.", counter_offer:null },
-  "REQ-2025-094": { recommendation:"APPROVE", risk_level:"Low",    summary:"Summit Children's has a perfect 100% trust index. Pediatric CT demand is well-documented and the 30-day window minimises revenue risk.", fleet_impact:"CT fleet at 76% utilization. No conflict with existing deployments — this fills the Feb 5 gap perfectly.", counter_offer:null },
-  "REQ-2025-098": { recommendation:"NEGOTIATE", risk_level:"Medium", summary:"Dialysis request is legitimate but dispatching 2 units simultaneously strains Midwest support coverage. Consider staggering deployment.", fleet_impact:"Dispatching both units simultaneously leaves the Midwest with zero backup dialysis. Recommend releasing 1 unit now, second in 2 weeks.", counter_offer:"Release Unit #1 now (Mar 1) and Unit #2 on Mar 15 — same contract value, improved fleet resilience." },
+  "REQ-2025-091": { recommendation:"APPROVE", risk_level:"Low",    summary:"Apollo Hyderabad has a 98% trust score with zero payment defaults. The MRI is urgently needed for cardiac surgical planning — denial could delay critical patient care at a Tier-1 facility.", fleet_impact:"South India fleet moves to 85% utilisation. One backup Magnetom Sola remains available at the Bengaluru hub.", counter_offer:null },
+  "REQ-2025-094": { recommendation:"APPROVE", risk_level:"Low",    summary:"Rainbow Children's has a perfect 100% trust index. Paediatric CT demand is well-documented and the 30-day window minimises revenue risk.", fleet_impact:"CT fleet at 76% utilisation. No conflict with existing deployments — fills the Feb 5 gap perfectly.", counter_offer:null },
+  "REQ-2025-098": { recommendation:"NEGOTIATE", risk_level:"Medium", summary:"Fortis Gurugram dialysis request is legitimate but dispatching 2 units simultaneously strains North India support coverage. Consider staggering.", fleet_impact:"Dispatching both units simultaneously leaves NCR with zero backup dialysis. Recommend releasing 1 unit now, second in 2 weeks.", counter_offer:"Release Unit #1 now (Mar 1) and Unit #2 on Mar 15 — same contract value ₹15.2L, improved fleet resilience." },
 };
 
 export default function OwnerRequests() {
@@ -255,7 +255,7 @@ Provide advice specific to this request — do not give generic answers.`,
           <ShieldAlert className="text-amber-500 shrink-0" size={28}/>
           <div>
             <p className="text-xs font-black uppercase text-amber-600">Fleet Capacity Warning</p>
-            <p className="text-[11px] font-bold opacity-60 text-primary">Accepting Saint Jude will put West Coast fleet at 100% utilization. No backup MRI in LA for 40 days. Consider AI advice before authorising.</p>
+            <p className="text-[11px] font-bold opacity-60 text-primary">Accepting Apollo Hyderabad will put South India fleet at 100% utilisation. No backup MRI in Hyderabad for 40 days. Consider AI advice before authorising.</p>
           </div>
         </div>
       )}

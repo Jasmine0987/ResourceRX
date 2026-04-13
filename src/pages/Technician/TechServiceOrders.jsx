@@ -8,14 +8,14 @@ import {
 } from 'lucide-react';
 
 const ORDERS_INIT = [
-  { id:"SO-4402", type:"Emergency Repair",      asset:"MRI Magnetom #04",  location:"North General · Suite B",  time:"ASAP",    status:"Dispatched", priority:"CRITICAL",
-    desc:"Liquid Helium at 92%. Immediate topping and seal inspection required to prevent quench." },
-  { id:"SO-3918", type:"Preventative Maint.",   asset:"GE Revolution CT",  location:"Summit Radiology",         time:"14:30",   status:"Scheduled",  priority:"STANDARD",
-    desc:"6-month preventative maintenance cycle. Includes tube cooling check and software update to v12.1." },
-  { id:"SO-3801", type:"Software Calibration",  asset:"Mobile X-Ray B",    location:"Mercy Outpatient",         time:"16:00",   status:"Scheduled",  priority:"STANDARD",
-    desc:"Post-transport recalibration after DEP-884. Verify grid alignment and exposure consistency." },
-  { id:"SO-3750", type:"Sensor Replacement",    asset:"Dialysis System V4", location:"City General · Ward 3",   time:"Tomorrow",status:"Pending",     priority:"STANDARD",
-    desc:"Pressure sensor P-004 showing drift of 0.8%. Replace and re-zero before next patient session." },
+  { id:"SO-4402", type:"Emergency Repair",      asset:"Siemens Magnetom Vida 3T",    location:"Apollo Hospitals Hyderabad · Radiology Wing",  time:"ASAP",    status:"Dispatched", priority:"CRITICAL",
+    desc:"Liquid Helium at 92%. Immediate topping and seal inspection required to prevent magnet quench. Patient queue: 8 pending MRIs." },
+  { id:"SO-3918", type:"Preventative Maint.",   asset:"GE Revolution CT 512-Slice",  location:"Fortis Hospital Bengaluru · Suite 3",          time:"14:30",   status:"Scheduled",  priority:"STANDARD",
+    desc:"6-month preventative maintenance per OEM schedule. X-ray tube inspection, coolant check, gantry alignment verification." },
+  { id:"SO-3801", type:"Software Calibration",  asset:"Philips IntelliVue MX800",    location:"AIIMS Delhi · ICU Ward 7",                     time:"16:00",   status:"Scheduled",  priority:"STANDARD",
+    desc:"Firmware update v4.2 — includes alarm threshold recalibration and SpO2 sensor drift correction." },
+  { id:"SO-3750", type:"Sensor Replacement",    asset:"Fresenius 5008S CorDiax",     location:"Kokilaben Hospital Mumbai · Renal Unit",       time:"Tomorrow",status:"Pending",     priority:"STANDARD",
+    desc:"VAM sensor replacement. Unit showing intermittent blood volume monitor alerts. Replacement kit in transit from Mumbai depot." },
 ];
 
 const PRIORITY_STYLE = {

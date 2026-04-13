@@ -4,21 +4,21 @@ import { useNavigate } from 'react-router-dom';
 import { TrendingUp, Zap, Target, LineChart, ShieldCheck, ArrowUpRight, Flame, Globe, Settings, ChevronLeft, CheckCircle2, Loader, BrainCircuit } from 'lucide-react';
 
 const DEMAND_DATA = [
-  { region:"Northeast Corridor", demand:"High",     yield:"+22%", trend:80, detail:"8 hospitals in queue, avg wait 4.2 days" },
-  { region:"West Coast / LA",    demand:"Critical", yield:"+41%", trend:97, detail:"MRI shortage — 3 facilities on emergency waitlist" },
-  { region:"Midwest Rural",      demand:"Stable",   yield:"+5%",  trend:35, detail:"Steady demand, no immediate shortages" },
-  { region:"Southeast / FL",     demand:"Growing",  yield:"+18%", trend:65, detail:"Seasonal uptick — Jan–Mar peak period" },
+  { region:"Mumbai Metropolitan",  demand:"Critical", yield:"+41%", trend:97, detail:"MRI shortage — 3 facilities on emergency waitlist at Kokilaben, Lilavati, Hinduja" },
+  { region:"Delhi NCR",            demand:"High",     yield:"+28%", trend:82, detail:"9 hospitals in queue, avg wait 3.8 days — AIIMS overflow driving demand" },
+  { region:"Bengaluru / Chennai",  demand:"High",     yield:"+22%", trend:76, detail:"Tech-city hospitals expanding ICU capacity — CT and ventilator demand surge" },
+  { region:"Tier-2 Cities",        demand:"Growing",  yield:"+15%", trend:55, detail:"Nagpur, Indore, Bhopal, Vadodara — underserved, high-growth opportunity" },
 ];
 
 const AI_PARAMS = [
-  { label:"Floor Price (Daily)", val:"$2,100",  enabled:true,  key:"floor",    ai_reason:"↑ from $1,850 — LA scarcity signal detected" },
-  { label:"Utilization Ceiling", val:"92%",     enabled:true,  key:"util",     ai_reason:"↓ from 95% — protect maintenance schedule" },
-  { label:"Minimum Duration",    val:"14 Days", enabled:true,  key:"duration", ai_reason:"↑ from 7 — reduces logistics cost $420/deployment" },
-  { label:"Emergency Markup",    val:"+65%",    enabled:true,  key:"markup",   ai_reason:"↑ from +50% — P1 emergency demand active in FL" },
+  { label:"Floor Price (Daily)", val:"₹1.75L",  enabled:true,  key:"floor",    ai_reason:"↑ from ₹1.55L — Mumbai scarcity signal detected" },
+  { label:"Utilization Ceiling", val:"92%",     enabled:true,  key:"util",     ai_reason:"↓ from 95% — protect AERB maintenance schedule" },
+  { label:"Minimum Duration",    val:"14 Days", enabled:true,  key:"duration", ai_reason:"↑ from 7 — reduces Gati logistics cost ₹35k/deployment" },
+  { label:"Emergency Markup",    val:"+65%",    enabled:true,  key:"markup",   ai_reason:"↑ from +50% — P1 emergency demand active in Delhi NCR" },
 ];
 
 const MANUAL_PARAMS = [
-  { label:"Floor Price (Daily)", val:"$1,850", enabled:true,  key:"floor"    },
+  { label:"Floor Price (Daily)", val:"₹1.55L", enabled:true,  key:"floor"    },
   { label:"Utilization Ceiling", val:"95%",    enabled:true,  key:"util"     },
   { label:"Minimum Duration",    val:"7 Days", enabled:false, key:"duration" },
   { label:"Emergency Markup",    val:"+50%",   enabled:true,  key:"markup"   },
@@ -119,7 +119,7 @@ export default function OwnerYield() {
           </div>
           <div className="p-5 bg-primary/5 rounded-2xl text-center">
             <p className="text-[9px] font-black uppercase opacity-40 text-primary mb-1">Projected Monthly @ {multiplier.toFixed(2)}x</p>
-            <p className="text-2xl font-black text-primary">${projectedYield.toLocaleString()}</p>
+            <p className="text-2xl font-black text-primary">₹{(projectedYield*83.5/100000).toFixed(1)}L</p>
           </div>
         </div>
 
@@ -158,7 +158,7 @@ export default function OwnerYield() {
             <LineChart size={20} className="text-primary opacity-40"/>
           </div>
           <div className="flex items-baseline gap-2 mb-2">
-            <h3 className="text-5xl font-black tracking-tighter text-primary">${Math.round(projectedYield*0.92/1000)}k</h3>
+            <h3 className="text-5xl font-black tracking-tighter text-primary">₹{(projectedYield*0.92*83.5/100000).toFixed(1)}L</h3>
             <span className="text-xs font-black text-emerald-500">+{Math.round((multiplier-1)*12)}%</span>
           </div>
           <p className="text-[10px] font-black opacity-30 uppercase tracking-widest mb-6 text-primary">Estimated Net Payout</p>
@@ -240,7 +240,7 @@ export default function OwnerYield() {
         <div className="flex-1 space-y-2">
           <h4 className="text-2xl font-black italic uppercase tracking-tighter">Market Liquidity Alert</h4>
           <p className="text-sm font-bold opacity-70 leading-relaxed uppercase">
-            A shortage of High-Field MRI units is projected for Florida starting next month. Relocating Unit #08 to the Miami node could capture a 25% premium — approx. <span className="font-black underline">+$18,400/month</span>.
+            A shortage of High-Field MRI units is projected for Mumbai starting next month. Relocating Unit #08 to the Kokilaben node could capture a 25% premium — approx. <span className="font-black underline">+₹15.4L/month</span>.
           </p>
         </div>
         <button onClick={applyRelocation} disabled={relocating}

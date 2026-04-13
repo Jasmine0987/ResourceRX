@@ -11,24 +11,31 @@ import '../../App.css';
 
 const STATUS_STYLE = {
   "ACTIVE SESSION": { bg: "bg-emerald-500/10 text-emerald-600", dot: "bg-emerald-500 animate-pulse" },
-  "IN TRANSIT":     { bg: "bg-blue-500/10 text-blue-600",    dot: "bg-blue-500 animate-pulse" },
-  "PENDING SETUP":  { bg: "bg-amber-500/10 text-amber-600",  dot: "bg-amber-400" },
-  "COMPLETED":      { bg: "bg-gray-500/10 text-gray-500",    dot: "bg-gray-400" },
+  "IN TRANSIT":     { bg: "bg-blue-500/10 text-blue-600",       dot: "bg-blue-500 animate-pulse"    },
+  "PENDING SETUP":  { bg: "bg-amber-500/10 text-amber-600",     dot: "bg-amber-400"                 },
+  "COMPLETED":      { bg: "bg-gray-500/10 text-gray-500",       dot: "bg-gray-400"                  },
 };
 
 export default function ClinicDashboard() {
   const navigate = useNavigate();
   const { clinic, bookingHistory, currentBooking } = useClinic();
 
-  const activeCount   = bookingHistory.filter(b => b.status === "ACTIVE SESSION").length;
-  const transitCount  = bookingHistory.filter(b => b.status === "IN TRANSIT").length;
-  const totalSpend    = bookingHistory.reduce((s, b) => s + (b.price || 0), 0);
+  const activeCount    = bookingHistory.filter(b => b.status === "ACTIVE SESSION").length;
+  const transitCount   = bookingHistory.filter(b => b.status === "IN TRANSIT").length;
+  const totalSpend     = bookingHistory.reduce((s, b) => s + (b.price || 0), 0);
   const completedCount = bookingHistory.filter(b => b.status === "COMPLETED").length;
 
+  // Format INR spend correctly — ₹1,00,000 = ₹1L, not ₹1k
+  const formatSpend = (amount) => {
+    if (amount >= 100000) return `₹${(amount / 100000).toFixed(1)}L`;
+    if (amount >= 1000)   return `₹${(amount / 1000).toFixed(1)}K`;
+    return `₹${amount}`;
+  };
+
   const stats = [
-    { label: "Active Bookings",    value: String(activeCount || bookingHistory.length), icon: Calendar,     color: "text-blue-500" },
+    { label: "Active Bookings",    value: String(activeCount || bookingHistory.length), icon: Calendar,     color: "text-blue-500"   },
     { label: "In Transit",         value: String(transitCount),                         icon: Activity,     color: "text-emerald-500" },
-    { label: "Total Spend",        value: `$${(totalSpend / 1000).toFixed(1)}k`,        icon: CreditCard,   color: "text-amber-500" },
+    { label: "Total Spend",        value: formatSpend(totalSpend),                      icon: CreditCard,   color: "text-amber-500"  },
     { label: "Completed Sessions", value: String(completedCount),                       icon: CheckCircle2, color: "text-purple-500" },
   ];
 
@@ -41,7 +48,6 @@ export default function ClinicDashboard() {
   return (
     <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="pt-40 pb-20 px-6 max-w-7xl mx-auto">
 
-      {/* HEADER */}
       <div className="mb-12 ml-4">
         <div className="inline-flex items-center gap-2 px-4 py-1 rounded-full bg-white/40 text-[10px] font-black uppercase mb-4">
           <TrendingUp size={14} className="text-secondary" /> Network Performance: Optimal
@@ -130,7 +136,11 @@ export default function ClinicDashboard() {
                     </div>
                     <div className="text-right space-y-1">
                       <span className={`text-[10px] font-black uppercase px-3 py-1 rounded-full ${s.bg}`}>{b.status}</span>
-                      {b.price && <p className="text-xs font-bold opacity-40">${b.price}/hr</p>}
+                      {b.price && (
+                        <p className="text-xs font-bold opacity-40">
+                          ₹{Number(b.price).toLocaleString('en-IN')}/hr
+                        </p>
+                      )}
                     </div>
                     {(b.status === "IN TRANSIT" || b.status === "ACTIVE SESSION") && (
                       <ChevronRight size={16} className="opacity-30" />
@@ -171,7 +181,6 @@ export default function ClinicDashboard() {
             </button>
           </div>
 
-          {/* Emergency button */}
           <button
             onClick={() => navigate('/clinic/emergency')}
             className="w-full glass-panel border-2 border-red-400/30 p-6 rounded-[2rem] font-black text-sm flex items-center gap-4 hover:bg-red-50 hover:border-red-400/60 transition-all group"
@@ -189,10 +198,10 @@ export default function ClinicDashboard() {
             <h4 className="text-[10px] font-black uppercase opacity-40 tracking-widest mb-5 text-center">Quick Actions</h4>
             <div className="space-y-3">
               {[
-                { label: "New Booking",      path: "/clinic/search",    icon: Package },
-                { label: "Track Delivery",   path: "/clinic/tracking",  icon: Activity },
-                { label: "View Payments",    path: "/clinic/payment",   icon: CreditCard },
-              ].map((action) => (
+                { label: "New Booking",    path: "/clinic/search",   icon: Package   },
+                { label: "Track Delivery", path: "/clinic/tracking", icon: Activity  },
+                { label: "View Payments",  path: "/clinic/payment",  icon: CreditCard},
+              ].map(action => (
                 <button
                   key={action.label}
                   onClick={() => navigate(action.path)}

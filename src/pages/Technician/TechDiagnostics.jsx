@@ -89,6 +89,8 @@ export default function TechDiagnostics() {
   const [telemetry, setTelemetry] = useState({ signal:'-42 dBm', cpuTemp:'44°C', latency:'14ms', storage:'99.9%' });
   const [logs, setLogs] = useState(INIT_LOGS);
   const [wavePhase, setWave] = useState(0);
+  const [aiResult, setAiResult] = useState(null);
+  const [aiLoading, setAiLoad] = useState(false);
   const [selectedSys, setSelectedSys] = useState(null);
 
   // live waveform
@@ -112,6 +114,7 @@ export default function TechDiagnostics() {
 
   const runScan = () => {
     setScanning(true);
+    setAiResult(null);
     setTimeout(() => {
       const newLog = {
         time: new Date().toLocaleTimeString('en-GB'),
@@ -122,6 +125,18 @@ export default function TechDiagnostics() {
       setScanCount(c=>c+1);
       setScanning(false);
     }, 3000);
+  };
+
+  const DIAG_FALLBACK = {status:"Advisory",score:94,finding:"Power surge event at 14:59 warrants monitoring. All other subsystems nominal. No immediate patient risk.",recommendation:"Complete a full 30-minute burn-in test before next clinical session to verify stability.",action:"Clear for Use"};
+  const runAI = async () => {
+    setAiLoad(true);
+    const result = await askMedGemmaJSON(
+      `You are MedGemma, AI diagnostics engine for ResourceRX. Analyse THIS SPECIFIC system telemetry and event log. Return ONLY valid JSON (no markdown): {"status":"Healthy"|"Advisory"|"Critical","score":number,"finding":string,"recommendation":string,"action":"Clear for Use"|"Schedule Maintenance"|"Take Offline"}`,
+      `Telemetry: ${JSON.stringify(telemetry)}. Event log (latest first): ${logs.map(l=>l.time+' '+l.code+' '+l.event).join('; ')}.`,
+      DIAG_FALLBACK
+    );
+    setAiResult(result);
+    setAiLoad(false);
   };
 
   const wavePoints = Array.from({length:80},(_,i)=>{
@@ -156,6 +171,11 @@ export default function TechDiagnostics() {
           <button onClick={runScan} disabled={scanning}
             className={`bg-primary text-white px-10 py-5 rounded-3xl font-black text-[11px] uppercase tracking-widest flex items-center gap-3 transition-all shadow-xl disabled:opacity-60 hover:bg-secondary hover:text-primary`}>
             {scanning?<><RefreshCw className="animate-spin" size={18}/> Scanning…</>:<><Zap size={18}/> Full System Ping</>}
+          </button>
+          <button onClick={runAI} disabled={aiLoading||scanning}
+            className="glass-panel px-8 py-5 rounded-3xl font-black text-[10px] uppercase tracking-widest flex items-center gap-3 text-primary hover:bg-white/60 transition-all disabled:opacity-40">
+            {aiLoading?<Loader size={16} className="animate-spin"/>:<BrainCircuit size={16}/>}
+            {aiLoading?'Analysing…':'AI Diagnosis'}
           </button>
         </div>
       </div>
@@ -241,6 +261,41 @@ export default function TechDiagnostics() {
           </button>
         </div>
       </div>
+
+      {/* AI DIAGNOSIS */}
+      <AnimatePresence>
+        {aiResult && (
+          <motion.div initial={{opacity:0,y:16}} animate={{opacity:1,y:0}}
+            className={`p-10 rounded-[3.5rem] border ${STATUS_COLOR[aiResult.status]}`}>
+            <div className="flex items-start justify-between gap-8">
+              <div className="flex items-start gap-6">
+                <BrainCircuit size={32} className="shrink-0 mt-1 text-primary"/>
+                <div className="space-y-3">
+                  <div className="flex items-center gap-3">
+                    <p className="text-[10px] font-black uppercase tracking-widest text-primary">MedGemma · {aiResult.status}</p>
+                    <span className="text-2xl font-black text-primary">{aiResult.score}<span className="text-sm opacity-40">/100</span></span>
+                  </div>
+                  <p className="text-sm font-bold text-primary">{aiResult.finding}</p>
+                  <p className="text-xs font-bold opacity-60 uppercase text-primary">{aiResult.recommendation}</p>
+                  <div className="flex items-center gap-2 mt-2">
+                    <CheckCircle2 size={14} className="text-emerald-600"/>
+                    <p className="text-[10px] font-black uppercase text-emerald-700">{aiResult.action}</p>
+                  </div>
+                </div>
+              </div>
+              <div className="flex gap-3 shrink-0">
+                {aiResult.action === 'Schedule Maintenance' && (
+                  <button onClick={()=>navigate('/tech/service-orders')}
+                    className="bg-primary text-white px-6 py-3 rounded-xl text-[9px] font-black uppercase hover:bg-secondary hover:text-primary transition-all">
+                    Schedule →
+                  </button>
+                )}
+                <button onClick={()=>setAiResult(null)} className="text-primary opacity-30 hover:opacity-100 transition-opacity"><X size={18}/></button>
+              </div>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
 
       {/* SUBSYSTEMS */}
       <div className={glass}>

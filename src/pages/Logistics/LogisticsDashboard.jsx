@@ -9,11 +9,11 @@ import {
 
 // ── Live feed data (simulates incoming dispatch events) ──────────────────────
 const FEED_INIT = [
-  { id: 1, time: "Just now",  event: "RRX-882 Arrived",        loc: "Summit Health NJ",  type: "arrival" },
-  { id: 2, time: "14m ago",   event: "Pickup Confirmed",        loc: "Northwell NY",       type: "pickup"  },
-  { id: 3, time: "28m ago",   event: "Route Recalculated",      loc: "I-95 North",         type: "alert"   },
-  { id: 4, time: "1h ago",    event: "New Assignment Issued",   loc: "Boston Med Center",  type: "new"     },
-  { id: 5, time: "2h ago",    event: "Incident Reported",       loc: "NJ Turnpike",        type: "incident"},
+  { id: 1, time: "Just now",  event: "RRX-882 Arrived",        loc: "Apollo Hospitals, Pune",      type: "arrival"  },
+  { id: 2, time: "22m ago",   event: "Pickup Confirmed",        loc: "Siemens Hub, Mumbai",          type: "pickup"   },
+  { id: 3, time: "48m ago",   event: "Route Recalculated",      loc: "Mumbai-Pune Expressway",       type: "alert"    },
+  { id: 4, time: "1h ago",    event: "New Assignment Issued",   loc: "AIIMS Delhi",                  type: "new"      },
+  { id: 5, time: "2h ago",    event: "Incident Reported",       loc: "NH-48, Bengaluru",             type: "incident" },
 ];
 
 const TYPE_COLORS = {
@@ -26,17 +26,19 @@ const TYPE_COLORS = {
 
 export default function LogisticsDashboard() {
   const navigate = useNavigate();
-  const [feed, setFeed]         = useState(FEED_INIT);
+  const [feed, setFeed]               = useState(FEED_INIT);
   const [activeUnits, setActiveUnits] = useState(8);
-  const [ping, setPing]         = useState(false);
+  const [ping, setPing]               = useState(false);
 
   // Simulate new events every 12 seconds
   useEffect(() => {
     const events = [
-      { event: "Cargo Secured",         loc: "Hartford CT",     type: "pickup"  },
-      { event: "Temperature Alert",     loc: "RX-441 Unit",     type: "alert"   },
-      { event: "Delivery Confirmed",    loc: "Mercy Hospital",  type: "arrival" },
-      { event: "New Dispatch Request",  loc: "Admin Portal",    type: "new"     },
+      { event: "Cargo Secured",          loc: "Fresenius Depot, Chennai",   type: "pickup"   },
+      { event: "Temperature Alert",      loc: "RX-441 Unit — Bengaluru",    type: "alert"    },
+      { event: "Delivery Confirmed",     loc: "KIMS Hospital, Hyderabad",   type: "arrival"  },
+      { event: "New Dispatch Request",   loc: "Admin Portal — Pune",        type: "new"      },
+      { event: "Checkpoint Cleared",     loc: "Delhi — AIIMS Gate 3",       type: "pickup"   },
+      { event: "Transit Delay — Traffic",loc: "NH-44, Hyderabad Bypass",    type: "alert"    },
     ];
     let idx = 0;
     const interval = setInterval(() => {
@@ -52,14 +54,14 @@ export default function LogisticsDashboard() {
   }, []);
 
   const stats = [
-    { label: "Active Fleet",   value: "24",   sub: `${activeUnits} in Transit`,  icon: Truck,      color: "text-primary",      route: "/logistics/map"     },
-    { label: "Avg. Transit",   value: "42m",  sub: "-12% vs last week",           icon: Zap,        color: "text-secondary",    route: "/logistics/active"  },
-    { label: "System Health",  value: "98.2%",sub: "All Nodes Optimal",           icon: ShieldCheck,color: "text-emerald-500",  route: "/logistics/map"     },
-    { label: "Active Techs",   value: "18",   sub: "4 On Standby",                icon: Users,      color: "text-primary",      route: "/logistics/active"  },
+    { label: "Active Fleet",   value: "24",    sub: `${activeUnits} in Transit`,  icon: Truck,       color: "text-primary",     route: "/logistics/map"     },
+    { label: "Avg. Transit",   value: "3.2h",  sub: "-8% vs last week",            icon: Zap,         color: "text-secondary",   route: "/logistics/active"  },
+    { label: "System Health",  value: "98.2%", sub: "All Nodes Optimal",           icon: ShieldCheck, color: "text-emerald-500", route: "/logistics/map"     },
+    { label: "Active Techs",   value: "18",    sub: "4 On Standby",                icon: Users,       color: "text-primary",     route: "/logistics/active"  },
   ];
 
   const quickActions = [
-    { label: "Live Map",        icon: MapPin,       route: "/logistics/map",      color: "bg-primary text-white"     },
+    { label: "Live Map",        icon: MapPin,        route: "/logistics/map",      color: "bg-primary text-white"     },
     { label: "Active Dispatch", icon: Truck,         route: "/logistics/active",   color: "bg-secondary text-primary" },
     { label: "Incident Log",    icon: AlertTriangle, route: "/logistics/incident", color: "bg-red-100 text-red-600"   },
     { label: "Handover Logs",   icon: Package,       route: "/logistics/logs",     color: "bg-white/60 text-primary"  },
@@ -126,7 +128,7 @@ export default function LogisticsDashboard() {
           <div className="relative z-10">
             <h3 className="text-3xl font-black tracking-tighter mb-3 italic text-secondary">Satellite Mesh Network</h3>
             <p className="text-sm font-bold opacity-60 max-w-sm leading-relaxed">
-              Real-time positioning active for all Class-7 medical transport vehicles. 14 nodes reporting across the Eastern Seaboard.
+              Real-time positioning active for all Class-7 medical transport vehicles. 14 nodes reporting across the Indian Subcontinent — Mumbai, Delhi, Bengaluru, Hyderabad, Chennai.
             </p>
           </div>
           <div className="relative z-10 flex gap-4 mt-8">
@@ -198,10 +200,10 @@ export default function LogisticsDashboard() {
             <Activity className="text-secondary" />
           </div>
           {[
-            { label: "MRI Units",       pct: 85 },
-            { label: "CT Scanners",     pct: 70 },
-            { label: "Dialysis Kits",   pct: 55 },
-            { label: "Ventilators",     pct: 40 },
+            { label: "MRI Units",        pct: 85 },
+            { label: "CT Scanners",      pct: 70 },
+            { label: "Dialysis Systems", pct: 55 },
+            { label: "Ventilators",      pct: 40 },
           ].map((item, i) => (
             <div key={i} className="mb-5">
               <div className="flex justify-between text-[10px] font-black mb-2 uppercase opacity-60 text-primary">

@@ -226,9 +226,9 @@ export default function ClinicRegistration() {
                       being re-created inside render — no more one-letter-at-a-time ── */}
                   <Field label="Official Clinic Name"  field="clinicName"   placeholder="e.g. St. Mary's Medical Center" value={form.clinicName}   onChange={handleFieldChange} error={errors.clinicName} />
                   <Field label="Medical License ID"    field="licenseId"    placeholder="e.g. ML-2024-00128"             value={form.licenseId}    onChange={handleFieldChange} error={errors.licenseId} />
-                  <Field label="Primary Contact Name"  field="contactName"  placeholder="Dr. Jane Smith"                 value={form.contactName}  onChange={handleFieldChange} error={errors.contactName} />
+                  <Field label="Primary Contact Name"  field="contactName"  placeholder="Dr. Jayanth Reddy"                 value={form.contactName}  onChange={handleFieldChange} error={errors.contactName} />
                   <Field label="Official Email"        field="email"        placeholder="admin@clinic.org" type="email"  value={form.email}        onChange={handleFieldChange} error={errors.email} />
-                  <Field label="Phone Number"          field="phone"        placeholder="+1 (555) 000-0000" type="tel"   value={form.phone}        onChange={handleFieldChange} error={errors.phone} />
+                  <Field label="Phone Number"          field="phone"        placeholder="+91 xxxxxxxxxx" type="tel"   value={form.phone}        onChange={handleFieldChange} error={errors.phone} />
                 </div>
               </motion.div>
             )}
@@ -238,11 +238,11 @@ export default function ClinicRegistration() {
               <motion.div key="s1" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }}
                 className="glass-panel rounded-[3rem] p-10 space-y-6">
                 <h3 className="text-xl font-black tracking-tighter mb-2">Facility Details</h3>
-                <Field label="Street Address" field="address"   placeholder="123 Medical Drive"  value={form.address}   onChange={handleFieldChange} error={errors.address} />
+                <Field label="Street Address" field="address"   placeholder="Gandhi Nagar"  value={form.address}   onChange={handleFieldChange} error={errors.address} />
                 <div className="grid md:grid-cols-3 gap-6">
-                  <Field label="City"         field="city"     placeholder="Chicago"             value={form.city}     onChange={handleFieldChange} error={errors.city} />
-                  <Field label="State/Region" field="state"    placeholder="IL"                  value={form.state}    onChange={handleFieldChange} error={errors.state} />
-                  <Field label="Country"      field="country"  placeholder="USA"                 value={form.country}  onChange={handleFieldChange} error={errors.country} />
+                  <Field label="City"         field="city"     placeholder="Ahmedabad"             value={form.city}     onChange={handleFieldChange} error={errors.city} />
+                  <Field label="State/Region" field="state"    placeholder="Gujarat"                  value={form.state}    onChange={handleFieldChange} error={errors.state} />
+                  <Field label="Country"      field="country"  placeholder="India"                 value={form.country}  onChange={handleFieldChange} error={errors.country} />
                 </div>
                 <Field label="Bed Count" field="bedCount" placeholder="e.g. 250" type="number" value={form.bedCount} onChange={handleFieldChange} error={errors.bedCount} />
                 <div>

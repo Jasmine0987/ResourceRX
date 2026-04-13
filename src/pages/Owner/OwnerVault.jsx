@@ -4,10 +4,12 @@ import { useNavigate } from 'react-router-dom';
 import { ShieldCheck, Lock, FileText, Download, AlertTriangle, History, Plus, Eye, CheckCircle, Clock, ChevronLeft, Upload, X, Loader } from 'lucide-react';
 
 const INIT_VAULT = [
-  { id:1, name:"ISO 13485:2016",           type:"Quality Mgmt", expiry:"Dec 2026", status:"Active",        asset:"Global Fleet"       },
-  { id:2, name:"Radiology Safety Cert",    type:"Compliance",   expiry:"Aug 2026", status:"Active",        asset:"Siemens MRI #04"    },
-  { id:3, name:"Liability Insurance Rider",type:"Legal",        expiry:"Feb 2026", status:"Expiring Soon", asset:"All Mobile Units"   },
-  { id:4, name:"FDA 510(k) Clearance",     type:"Regulatory",   expiry:"N/A",      status:"Permanent",     asset:"GE CT Scanner"      },
+  { id:1, name:"ISO 13485:2016 Quality Mgmt",    type:"Quality Mgmt", expiry:"Dec 2026", status:"Active",        asset:"India Fleet"               },
+  { id:2, name:"AERB Radiation Safety Cert",      type:"Compliance",   expiry:"Aug 2026", status:"Active",        asset:"Siemens MRI #04"           },
+  { id:3, name:"Third-Party Liability Insurance", type:"Legal",        expiry:"Feb 2026", status:"Expiring Soon", asset:"All Mobile Units"          },
+  { id:4, name:"CDSCO MD-15 Clearance",           type:"Regulatory",   expiry:"N/A",      status:"Permanent",     asset:"GE CT Scanner"             },
+  { id:5, name:"BIS Certification IS 13450",      type:"Regulatory",   expiry:"Mar 2027", status:"Active",        asset:"Draeger Evita V500"        },
+  { id:6, name:"NABH Equipment Accreditation",    type:"Quality Mgmt", expiry:"Jun 2027", status:"Active",        asset:"Philips IntelliVue MX800"  },
 ];
 
 const STATUS_COLOR = { Active:'text-emerald-600', 'Expiring Soon':'text-amber-500', Permanent:'text-primary' };
@@ -168,7 +170,7 @@ export default function OwnerVault() {
           <h3 className="text-xl font-black mb-6 flex items-center gap-3 italic uppercase"><CheckCircle className="text-secondary"/> Automated Compliance</h3>
           <p className="text-xs font-bold opacity-60 leading-relaxed uppercase mb-8">The ResourceRX protocol auto-syncs with state health departments to pre-verify equipment. No manual filing for 80% of regional deployments.</p>
           <div className="space-y-3">
-            {["State Regulatory Link","Health Board API","Insurance Oracle"].map((link,i)=>(
+            {["CDSCO Portal Sync","AERB Compliance API","IRDAI Insurance Oracle"].map((link,i)=>(
               <div key={i} className="flex justify-between items-center p-4 bg-white/10 rounded-2xl border border-white/10">
                 <span className="text-[10px] font-black uppercase tracking-widest">{link}</span>
                 <span className="text-[8px] font-black text-secondary uppercase px-2 py-0.5 bg-secondary/10 rounded-full">Connected</span>

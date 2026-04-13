@@ -40,7 +40,7 @@ export default function TechPrep() {
       try {
         // Mark deployment prep in ops center task feed
         const tasks = JSON.parse(sessionStorage.getItem('rrx_tech_tasks') || '[]');
-        tasks.unshift({ id:`PREP-${Date.now()}`, task:'Deployment Prep Complete — Released to Carrier', unit:'GE Revolution CT', status:'Completed', completedAt: new Date().toLocaleString() });
+        tasks.unshift({ id:`PREP-${Date.now()}`, task:'Deployment Prep Complete — Released to Carrier', unit:'Siemens Magnetom Vida 3T', status:'Completed', completedAt: new Date().toLocaleString() });
         sessionStorage.setItem('rrx_tech_tasks', JSON.stringify(tasks));
         // Mark Scheduled → Dispatched in service orders
         const ordersRaw = sessionStorage.getItem('rrx_tech_orders');
@@ -50,7 +50,7 @@ export default function TechPrep() {
         // Also write to handover log for logistics visibility
         try {
           const hlog = JSON.parse(sessionStorage.getItem('rrx_handover_log') || '[]');
-          hlog.unshift({ id:`PREP-${Date.now()}`, asset:'GE Revolution CT', clinic:'Carrier Handoff', date:new Date().toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'}).toUpperCase(), status:'VERIFIED', type:'Heavy Transit', tech:'Deployment Prep', amount:'TBD' });
+          hlog.unshift({ id:`PREP-${Date.now()}`, asset:'Siemens Magnetom Vida 3T', clinic:'Carrier Handoff', date:new Date().toLocaleDateString('en-IN',{month:'short',day:'numeric',year:'numeric'}).toUpperCase(), status:'VERIFIED', type:'Heavy Transit', tech:'Deployment Prep', amount:'₹ Per Contract' });
           sessionStorage.setItem('rrx_handover_log', JSON.stringify(hlog.slice(0,50)));
         } catch {}
       } catch {}
@@ -67,7 +67,7 @@ export default function TechPrep() {
         <Truck size={80} className="text-primary mx-auto mb-8"/>
       </motion.div>
       <h2 className="text-4xl font-black tracking-tighter text-primary mb-4">Released to Carrier</h2>
-      <p className="text-sm font-bold opacity-50 uppercase text-primary mb-10">GE Revolution CT cleared for transit. Carrier notified. Chain-of-custody initiated. ETA Boston General: 18:00.</p>
+      <p className="text-sm font-bold opacity-50 uppercase text-primary mb-10">Siemens Magnetom Vida 3T cleared for transit. Carrier notified. Chain-of-custody initiated. ETA Apollo Hospitals Hyderabad: Transit ~14 hours via road (Mumbai → Hyderabad, 760km).</p>
       <div className="flex gap-4 justify-center">
         <button onClick={()=>navigate('/tech')} className="bg-primary text-white px-10 py-4 rounded-2xl font-black text-[10px] uppercase tracking-widest">Ops Center</button>
         <button onClick={()=>navigate('/tech/service-orders')} className="glass-panel px-10 py-4 rounded-2xl font-black text-[10px] uppercase tracking-widest text-primary">Service Orders</button>
@@ -91,7 +91,7 @@ export default function TechPrep() {
         </div>
         <div className="text-right">
           <p className="text-[10px] font-black opacity-30 uppercase tracking-[0.2em] text-primary">Target Site</p>
-          <p className="text-sm font-bold text-primary italic">Boston General</p>
+          <p className="text-sm font-bold text-primary italic">Apollo Hospitals Hyderabad</p>
           <p className="text-[10px] font-black text-secondary uppercase">18:00 DEP</p>
         </div>
       </div>

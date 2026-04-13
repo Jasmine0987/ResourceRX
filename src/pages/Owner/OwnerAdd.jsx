@@ -43,7 +43,7 @@ export default function OwnerAdd() {
   };
   const validate3 = () => {
     const e = {};
-    if (!form.dailyRate || +form.dailyRate < 100) e.dailyRate = 'Min $100/day required';
+    if (!form.dailyRate || +form.dailyRate < 5000) e.dailyRate = 'Min ₹5,000/day required';
     setErrors(e); return Object.keys(e).length === 0;
   };
 
@@ -203,10 +203,10 @@ export default function OwnerAdd() {
                 <h3 className="text-2xl font-black mb-8 italic uppercase text-primary">Pricing Strategy</h3>
                 <div className="space-y-5">
                   <div className="space-y-2">
-                    <label className="text-[10px] font-black uppercase opacity-40 ml-4 text-primary">Daily Base Rate (USD) *</label>
+                    <label className="text-[10px] font-black uppercase opacity-40 ml-4 text-primary">Daily Base Rate (INR) *</label>
                     <div className="relative">
-                      <span className="absolute left-7 top-1/2 -translate-y-1/2 font-black text-2xl text-secondary">$</span>
-                      <input type="number" placeholder="2500" value={form.dailyRate} onChange={e=>set('dailyRate',e.target.value)}
+                      <span className="absolute left-7 top-1/2 -translate-y-1/2 font-black text-2xl text-secondary">₹</span>
+                      <input type="number" placeholder="35000" value={form.dailyRate} onChange={e=>set('dailyRate',e.target.value)}
                         className={`w-full glass-panel pl-14 pr-8 py-5 rounded-3xl font-black text-2xl bg-white/50 outline-none text-primary ${errors.dailyRate?'ring-2 ring-red-400':'focus:ring-2 ring-secondary'}`}/>
                     </div>
                     {errors.dailyRate && <p className="text-red-500 text-[10px] font-black ml-4">{errors.dailyRate}</p>}
@@ -231,8 +231,8 @@ export default function OwnerAdd() {
                   </div>
                   {form.dailyRate && (
                     <div className="p-5 bg-emerald-50 rounded-2xl border border-emerald-200">
-                      <p className="text-[9px] font-black uppercase text-emerald-600 mb-1">Projected Monthly @ 80% utilization</p>
-                      <p className="text-2xl font-black text-emerald-700">${(+form.dailyRate*30*0.8).toLocaleString('en-US',{maximumFractionDigits:0})}</p>
+                      <p className="text-[9px] font-black uppercase text-emerald-600 mb-1">Projected Monthly @ 80% Utilisation</p>
+                      <p className="text-2xl font-black text-emerald-700">₹{(+form.dailyRate*30*0.8).toLocaleString('en-IN',{maximumFractionDigits:0})}</p>
                     </div>
                   )}
                 </div>

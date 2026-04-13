@@ -8,24 +8,24 @@ import {
 } from 'lucide-react';
 
 const TASKS_INIT = [
-  { id:1, time:"14:00", task:"Routine Cryogen Check",  unit:"Siemens MRI #04",  status:"Upcoming",  route:"/tech/service-orders" },
-  { id:2, time:"16:30", task:"Safety Protocol 09",     unit:"Mobile X-Ray B",   status:"Upcoming",  route:"/tech/calibration"    },
-  { id:3, time:"Done",  task:"Software Patch v4.2",    unit:"CT-Omega",         status:"Completed", route:"/tech/service-orders" },
-  { id:4, time:"11:00", task:"Diagnostic Sweep",       unit:"GE Revolution CT", status:"Completed", route:"/tech/diagnostics"    },
+  { id:1, time:"14:00", task:"Routine Cryogen Check",  unit:"Siemens Magnetom Vida 3T",  status:"Upcoming",  route:"/tech/service-orders" },
+  { id:2, time:"16:30", task:"AERB Safety Protocol 09", unit:"Philips IntelliVue MX800", status:"Upcoming",  route:"/tech/calibration"    },
+  { id:3, time:"Done",  task:"Firmware Update v4.2",   unit:"GE Revolution CT 512", status:"Completed", route:"/tech/service-orders" },
+  { id:4, time:"11:00", task:"Diagnostic Sweep",       unit:"Siemens Somatom Force", status:"Completed", route:"/tech/diagnostics"    },
 ];
 
 export default function TechDashboard() {
   const navigate = useNavigate();
   const [tasks, setTasks]   = useState(TASKS_INIT);
   const [alerts, setAlerts] = useState([
-    { id:1, msg:"Emergency calibration request: St. Luke's", urgent:true,  route:"/tech/service-orders" },
-    { id:2, msg:"Low stock: High-Voltage Cable Set",         urgent:false, route:"/tech/inventory"      },
+    { id:1, msg:"Emergency calibration request: Apollo Hospitals Hyderabad", urgent:true,  route:"/tech/service-orders" },
+    { id:2, msg:"Low stock: High-Voltage Cable Set (₹56,800 reorder)", urgent:false, route:"/tech/inventory" },
   ]);
 
   // simulate new alert every 25s
   useEffect(() => {
     const pool = [
-      { msg:"New service order assigned: Summit CT",    urgent:true,  route:"/tech/service-orders" },
+      { msg:"New service order assigned: Fortis Bengaluru CT", urgent:true,  route:"/tech/service-orders" },
       { msg:"Part shipment arrived at your next site",  urgent:false, route:"/tech/inventory"      },
     ];
     let i = 0;
@@ -110,7 +110,7 @@ export default function TechDashboard() {
               <div className="space-y-4">
                 {[
                   { icon:MapPin, label:"Location", val:"St. Luke's Oncology Wing" },
-                  { icon:Wrench, label:"Asset",    val:"GE Revolution CT #102"   },
+                  { icon:Wrench, label:"Asset",    val:"Siemens Magnetom Vida 3T"   },
                   { icon:Clock,  label:"ETA",      val:"Dispatch: ASAP"          },
                 ].map((row,i) => (
                   <div key={i} className="flex items-center gap-4">
