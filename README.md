@@ -1,56 +1,67 @@
 # ResourceRX
 
-AI-powered peer-to-peer medical equipment sharing network that helps hospitals and care facilities match idle, high-value equipment with urgent demand across four role-based portals.
+AI-powered peer-to-peer medical equipment sharing network for hospitals and care facilities facing urgent equipment shortages.
+
+ResourceRX connects facilities with idle high-value medical assets — MRI scanners, ventilators, dialysis units, CT scanners, and other critical equipment — with organizations that need them quickly. The platform is organized around four role-specific portals: clinic, owner, technician, and logistics.
 
 [![Node.js](https://img.shields.io/badge/Node.js-18%2B-339933?logo=node.js&logoColor=white)](https://nodejs.org/)
 [![React](https://img.shields.io/badge/React-19-61DAFB?logo=react&logoColor=white)](https://react.dev/)
 [![Vite](https://img.shields.io/badge/Vite-v7-646CFF?logo=vite&logoColor=white)](https://vite.dev/)
 [![Ollama](https://img.shields.io/badge/Ollama-Local%20AI-4B7BE5)](https://ollama.com/)
+[![JavaScript](https://img.shields.io/badge/Language-JavaScript-F7DF1E?logo=javascript&logoColor=black)](https://developer.mozilla.org/en-US/docs/Web/JavaScript)
 [![License](https://img.shields.io/badge/License-Open%20Source-green)](LICENSE)
 
-## What the project does
+## What this project does
 
-ResourceRX is a local-first equipment-sharing platform built for healthcare operations. It gives clinics, owners, technicians, and logistics teams a single system for locating medical devices, booking transfers, tracking status, coordinating service, and monitoring utilization.
+ResourceRX is a local-first healthcare asset-sharing platform built to reduce equipment bottlenecks and improve utilization of expensive medical technology.
 
-The platform is designed around equipment shortages and urgent care needs. A facility with idle MRI, CT, ventilator, or dialysis equipment can make that capacity visible to another facility that needs it immediately. Each role has a dedicated portal for the tasks they need to perform.
+The core workflow is simple:
+- a clinic identifies equipment it needs
+- an owner lists available devices
+- logistics coordinates movement
+- technicians prepare and validate equipment
+- the system uses local AI to support operational decisions
 
-## Why the project is useful
+This is designed as a real operational prototype for shortages, urgency response, and equipment lifecycle coordination.
 
-Healthcare operations rely on equipment availability, maintenance readiness, and rapid logistics. ResourceRX helps teams do all three in one application.
+## Why this is useful
+
+The problem ResourceRX addresses is common in healthcare operations:
+- equipment sits idle in one facility while another faces downtime
+- urgent cases can’t wait for slow, fragmented manual coordination
+- field teams often lack a single interface for managing movement, service, and status
 
 ### Benefits
 
 - Faster access to critical equipment during shortages
-- Better utilization of expensive machines already in the network
-- Clear role-based experiences for clinics, owners, technicians, and logistics teams
-- Real-time equipment movement and ETA visibility
-- AI-assisted recommendations and operational support without cloud dependence
-- Privacy-friendly, local-first architecture suitable for internal deployment
+- Better asset utilization for high-cost infrastructure
+- Stronger operational visibility across booking, route, tracking, and service
+- Role-specific experiences for different stakeholders
+- AI-assisted guidance using a local model with no cloud dependency
+- Privacy-friendly, local-first architecture
 
-## High-level system overview
+## Project overview
 
 ```mermaid
 flowchart LR
-    subgraph Users[Clinicians and Operations Teams]
-        Clinic[Clinic Portal]
-        Owner[Owner Portal]
-        Tech[Technician Portal]
-        Logistics[Logistics Portal]
-    end
-
-    subgraph Frontend[Frontend Layer]
+    subgraph Frontend[Frontend]
         Landing[Landing Page\nsrc/pages/LandingPage.jsx]
         Login[Login & Registration\nsrc/pages/LoginPage.jsx]
-        Router[App Routing\nsrc/App.jsx]
+        ClinicUI[Clinic Portal\nsrc/pages/Clinic]
+        OwnerUI[Owner Portal\nsrc/pages/Owner]
+        TechUI[Technician Portal\nsrc/pages/Technician]
+        LogisticsUI[Logistics Portal\nsrc/pages/Logistics]
+        AIChat[AI Console\nsrc/components/MedGemmaChat.jsx]
     end
 
-    subgraph State[Application State]
-        Context[ClinicContext\nsrc/context/ClinicContext.jsx]
+    subgraph App[Application Layer]
+        Router[React Router\nsrc/App.jsx]
+        Context[Clinic Context\nsrc/context/ClinicContext.jsx]
     end
 
     subgraph Backend[Backend Services]
         Server[Express API\nserver/index.js]
-        AI[AI Proxy\nsrc/medgemma.js]
+        AIProxy[AI Proxy\nsrc/medgemma.js]
     end
 
     subgraph LocalAI[Local AI Layer]
@@ -58,52 +69,59 @@ flowchart LR
         Model[gemma:2b]
     end
 
-    subgraph External[External Data Providers]
+    subgraph External[External Services]
         Weather[Open-Meteo]
-        Routes[OpenRouteService]
+        Route[OpenRouteService]
         FX[ExchangeRate-API]
     end
 
-    Clinic --> Router
-    Owner --> Router
-    Tech --> Router
-    Logistics --> Router
     Landing --> Router
     Login --> Router
+    ClinicUI --> Router
+    OwnerUI --> Router
+    TechUI --> Router
+    LogisticsUI --> Router
+    AIChat --> Router
+
     Router --> Context
     Router --> Server
-    Server --> AI
-    AI --> Ollama
+    Server --> AIProxy
+    AIProxy --> Ollama
     Ollama --> Model
     Server --> Weather
-    Server --> Routes
+    Server --> Route
     Server --> FX
 
     click Landing "https://github.com/Jasmine0987/ResourceRX/blob/main/src/pages/LandingPage.jsx"
     click Login "https://github.com/Jasmine0987/ResourceRX/blob/main/src/pages/LoginPage.jsx"
+    click ClinicUI "https://github.com/Jasmine0987/ResourceRX/tree/main/src/pages/Clinic"
+    click OwnerUI "https://github.com/Jasmine0987/ResourceRX/tree/main/src/pages/Owner"
+    click TechUI "https://github.com/Jasmine0987/ResourceRX/tree/main/src/pages/Technician"
+    click LogisticsUI "https://github.com/Jasmine0987/ResourceRX/tree/main/src/pages/Logistics"
+    click AIChat "https://github.com/Jasmine0987/ResourceRX/blob/main/src/components/MedGemmaChat.jsx"
     click Router "https://github.com/Jasmine0987/ResourceRX/blob/main/src/App.jsx"
     click Context "https://github.com/Jasmine0987/ResourceRX/blob/main/src/context/ClinicContext.jsx"
     click Server "https://github.com/Jasmine0987/ResourceRX/blob/main/server/index.js"
-    click AI "https://github.com/Jasmine0987/ResourceRX/blob/main/src/medgemma.js"
+    click AIProxy "https://github.com/Jasmine0987/ResourceRX/blob/main/src/medgemma.js"
 ```
 
-## Role-based architecture
+## Role-based portal architecture
 
 ```mermaid
 flowchart TB
     subgraph Clinic[Clinic Portal]
         Search[Search Equipment]
-        Booking[Book Asset]
-        Track[Track Delivery]
+        Booking[Requests & Booking]
+        Track[Tracking]
         Pay[Payments]
-        Review[Completion & Feedback]
+        Feedback[Completion & Feedback]
     end
 
     subgraph Owner[Owner Portal]
         Add[Add Inventory]
-        Analytics[Analytics]
-        Dispatch[Dispatch]
-        Settlements[Settlements]
+        Analytics[Asset Analytics]
+        Dispatch[Dispatch Coordination]
+        Settle[Settlements]
     end
 
     subgraph Tech[Technician Portal]
@@ -115,15 +133,15 @@ flowchart TB
 
     subgraph Logistics[Logistics Portal]
         Active[Active Shipments]
-        Incident[Incident Handling]
+        Incidents[Incident Handling]
         Map[Map View]
         Logs[Operational Logs]
     end
 
-    Search --> Booking --> Track --> Pay --> Review
-    Add --> Analytics --> Dispatch --> Settlements
+    Search --> Booking --> Track --> Pay --> Feedback
+    Add --> Analytics --> Dispatch --> Settle
     Service --> Diagnose --> Calibrate --> Inventory
-    Active --> Incident --> Map --> Logs
+    Active --> Incidents --> Map --> Logs
 
     click Search "https://github.com/Jasmine0987/ResourceRX/tree/main/src/pages/Clinic"
     click Add "https://github.com/Jasmine0987/ResourceRX/tree/main/src/pages/Owner"
@@ -142,23 +160,23 @@ sequenceDiagram
     participant Logistics as Logistics Team
     participant AI as MedGemma AI
 
-    Clinic->>Platform: Search equipment by type / location
-    Platform->>Owner: Broadcast available inventory
-    Owner-->>Platform: List device availability
-    Clinic->>Platform: Request equipment booking
-    Platform->>Owner: Review and approve request
-    Owner-->>Platform: Confirm equipment is ready
-    Platform->>Logistics: Assign dispatch / route
-    Logistics->>Tech: Coordinate technician handoff if needed
-    Tech-->>Platform: Inspection and readiness update
-    Platform->>AI: Request operational guidance / decision support
-    AI-->>Platform: Recommendation or summary
-    Logistics-->>Clinic: Real-time ETA and tracking updates
-    Clinic-->>Platform: Complete equipment use / feedback
+    Clinic->>Platform: Search equipment
+    Platform->>Owner: Query availability
+    Owner-->>Platform: List asset inventory
+    Clinic->>Platform: Request booking
+    Platform->>Owner: Approve or decline request
+    Owner-->>Platform: Confirm asset readiness
+    Platform->>Logistics: Allocate dispatch
+    Logistics->>Tech: Coordinate technician handoff
+    Tech-->>Platform: Service or inspection update
+    Platform->>AI: Request operational guidance
+    AI-->>Platform: Recommendation
+    Logistics-->>Clinic: ETA and tracking updates
+    Clinic-->>Platform: Complete equipment use
     Platform-->>Owner: Settlement and utilization report
 ```
 
-## Runtime and deployment model
+## Runtime / deployment model
 
 ```mermaid
 flowchart TB
@@ -167,9 +185,9 @@ flowchart TB
     React[React Frontend]
     Express[Express Backend\nhttp://localhost:5000]
     Ollama[Ollama\nhttp://127.0.0.1:11434]
-    Model[gemma:2b local model]
+    Model[gemma:2b]
     OpenMeteo[Open-Meteo API]
-    ORS[OpenRouteService]
+    ORS[OpenRouteService API]
     FXAPI[ExchangeRate-API]
 
     Browser --> Vite
@@ -186,6 +204,38 @@ flowchart TB
     click React "https://github.com/Jasmine0987/ResourceRX/blob/main/src/App.jsx"
     click Express "https://github.com/Jasmine0987/ResourceRX/blob/main/server/index.js"
 ```
+
+## Feature highlights
+
+- Four role-based portals with dedicated user journeys
+- Search and booking flow for urgent equipment requests
+- Real-time position tracking and ETAs
+- Medical equipment inventory with typed categories
+- AI-guided operations using local Ollama inference
+- Logistics and technician workflows for coordination
+- Weather, route, and market-aware operational context
+
+## Technology stack
+
+### Frontend
+- React 19
+- Vite
+- React Router DOM
+- Tailwind CSS
+- Framer Motion
+- Lucide React
+
+### Backend
+- Node.js 18+
+- Express 5
+- Local API layer
+- CORS support for frontend dev workflow
+
+### AI and external data
+- Ollama with `gemma:2b`
+- Open-Meteo
+- OpenRouteService
+- ExchangeRate-API
 
 ## Project structure
 
@@ -225,41 +275,13 @@ ResourceRX/
 ├── README.md
 ├── .gitignore
 ├── pnpm-lock.yaml
-├── LICENSE
-└── docs/
-    └── (add docs as needed)
+└── LICENSE
 ```
-
-## Technology stack
-
-### Frontend
-
-- React 19
-- Vite
-- React Router DOM
-- Tailwind CSS
-- Framer Motion
-- Lucide React
-
-### Backend
-
-- Node.js 18+
-- Express 5
-- CORS support for localhost development
-- Local AI proxy to Ollama
-
-### AI and service integrations
-
-- Ollama with `gemma:2b`
-- Open-Meteo weather API
-- OpenRouteService routing API
-- ExchangeRate-API currency data
 
 ## Getting started
 
 ### Prerequisites
-
-- Node.js 18 or newer
+- Node.js 18+
 - npm
 - Ollama installed locally
 - Git
@@ -276,115 +298,115 @@ npm install
 cd server && npm install && cd ..
 ```
 
-### 3. Install a local model with Ollama
+### 3. Install and pull the local AI model
 
 ```bash
 curl -fsSL https://ollama.com/install.sh | sh
 ollama pull gemma:2b
 ```
 
-### 4. Run the services
+### 4. Run the application
 
 Open three terminals.
 
-#### Terminal 1: AI engine
+#### Terminal 1: start Ollama
 
 ```bash
 ollama serve
 ```
 
-#### Terminal 2: backend
+#### Terminal 2: start the backend
 
 ```bash
 cd server
 node index.js
 ```
 
-#### Terminal 3: frontend
+#### Terminal 3: start the frontend
 
 ```bash
 npm run dev
 ```
 
-Open the app at:
-
+Once started:
 - Frontend: http://localhost:5173
 - Backend: http://localhost:5000
 
-### Verify AI connectivity
+### Verify AI backend
 
 ```bash
 curl http://localhost:5000/test-ai
 ```
 
-Expected output indicates that the local Ollama model is responding.
+The response should confirm the local AI service is online.
 
 ## Main API routes
 
-The backend in `server/index.js` exposes a combination of local and live-data endpoints:
+The backend in `server/index.js` exposes a set of local and live-data endpoints:
 
 | Method | Route | Purpose |
 |---|---|---|
 | GET | `/` | Backend health check |
-| POST | `/api/medgemma` | Send prompt to Ollama |
-| GET | `/test-ai` | Verify the AI service |
-| GET | `/api/positions` | Real-time device positions |
-| GET | `/api/equipment` | Equipment catalog and availability |
-| GET | `/api/weather` | Weather for route and ETA forecasting |
-| GET | `/api/route` | Travel distance and route approximation |
+| GET | `/api/positions` | Real-time equipment locations |
+| GET | `/api/equipment` | Equipment catalog and inventory |
+| GET | `/api/weather` | Weather-based ETA analysis |
+| GET | `/api/route` | Distance and route estimation |
 | GET | `/api/currency` | Exchange rate data |
+| POST | `/api/medgemma` | Send prompt to local Ollama instance |
+| GET | `/test-ai` | AI service connectivity check |
 
 ## Developer notes
 
-Some of the app’s behavior is intentionally powered by local and fallback data so the project can run without external credentials during development.
+This project is built to run locally with lightweight fallback data when external services are unavailable. It intentionally balances realism and demoability:
+- the backend maintains in-memory equipment positions
+- weather and route data are pulled from public APIs where available
+- currency exchange rates are available via APIs or fallback values
+- AI calls run locally using Ollama instead of a hosted model
 
-Examples from the backend:
-
-- `server/index.js` uses local in-memory position tracking for equipment movement
-- weather, route, and currency data fall back gracefully if external APIs are unavailable
-- AI calls are routed to a local Ollama engine instead of a cloud-hosted model
-
-This keeps the project easy to demo locally while still simulating operational conditions.
+This makes it easy to run, test, and demo without a production cloud stack.
 
 ## How users can get help
 
-Use the repository’s GitHub support surfaces for help:
-
 - Open a GitHub issue for bugs or feature requests
-- Ask questions in the repository discussions if enabled
-- Review implementation details in `src/`, `src/pages/`, and `server/index.js`
+- Use discussions if enabled in the repository
+- Review the code in `src/`, `src/pages/`, and `server/index.js`
+- Validate behavior with the local app and backend endpoints
 
 ## Who maintains and contributes
 
-This project is maintained by the repository owner and community contributors. Contributions are welcome via pull requests.
+This project welcomes contributors through GitHub pull requests. The repository owner and contributors manage the project in the GitHub ecosystem.
 
-### Suggested contribution workflow
+### Contribution workflow
 
 1. Fork the repository
 2. Create a feature branch
 3. Make focused changes
-4. Validate with local development steps
-5. Open a pull request with a clear summary and screenshots when relevant
+4. Verify locally
+5. Submit a pull request with a clear summary
 
 ## Contributing
 
-- Prefer small, reviewable changes
-- Keep components and routes scoped to clear user roles
-- Follow existing JavaScript patterns and project conventions
-- Run linting and validate locally before submitting pull requests
-
-## Documentation references
-
-- [README](README.md)
-- [src/App.jsx](src/App.jsx)
-- [src/pages/LandingPage.jsx](src/pages/LandingPage.jsx)
-- [server/index.js](server/index.js)
-- [src/components/MedGemmaChat.jsx](src/components/MedGemmaChat.jsx)
+- Keep changes small and reviewable
+- Follow the existing JS/React patterns
+- Validate with local development before submitting PRs
+- Prefer functionality that improves equipment coordination or operational clarity
 
 ## Support
 
-This project is a demo and operational prototype. If used for real healthcare deployment, validate all workflows with local clinical, compliance, and operational review before production use.
+This project is best understood as a local prototype and operations tool. If it is used in a real healthcare environment, validate all workflows with local clinical, compliance, and operational review before production deployment.
 
 ## License
 
-This repository is intended to be open source, but a formal license file should be confirmed before broader redistribution or commercial reuse.
+This repository is intended to be open source, but license details should be confirmed before broader commercial or redistribution use.
+
+---
+
+## Diagram-design style summary
+
+This project fits a diagram-first product architecture pattern:
+- product narrative at the top
+- operational workflow in the middle
+- technical runtime at the bottom
+- interactive diagrams connecting directly to code and services
+
+That combination gives ResourceRX a clean, design-forward README that is both stakeholder-friendly and engineering-accurate.
