@@ -400,13 +400,3 @@ This project is best understood as a local prototype and operations tool. If it 
 This repository is intended to be open source, but license details should be confirmed before broader commercial or redistribution use.
 
 ---
-
-## Diagram-design style summary
-
-This project fits a diagram-first product architecture pattern:
-- product narrative at the top
-- operational workflow in the middle
-- technical runtime at the bottom
-- interactive diagrams connecting directly to code and services
-
-That combination gives ResourceRX a clean, design-forward README that is both stakeholder-friendly and engineering-accurate.
